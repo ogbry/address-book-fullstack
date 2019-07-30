@@ -4,6 +4,7 @@ import { BrowserRouter, Route} from 'react-router-dom';
 //Components
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
+import AddresBook from './components/AddressBook';
 
 
 class App extends React.Component{
@@ -11,10 +12,10 @@ class App extends React.Component{
 
     return (
       <React.Fragment>
-        
         <BrowserRouter>
           <Route exact path="/" component={SignIn} />
           <Route path="/signup" component={SignUp} />
+          <Route path="/addressbook" component={AddresBook} />
         </BrowserRouter>
        
       </React.Fragment>

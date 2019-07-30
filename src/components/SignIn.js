@@ -9,8 +9,10 @@ import Button from '@material-ui/core/Button';
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import Snackbar from '@material-ui/core/Snackbar';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
-const styles = {
+const styles = {	
 	inputBox: {
 		border: 'solid 1px lightgrey',
 		padding: '30px',
@@ -36,11 +38,53 @@ class SignIn extends React.Component{
 		super();
 
 		this.state = {
-
-
+			username: '',
+	       	password: '',
+	       	userTextfield: false,
+	       	passwordTextfield: false,
+	       	userhelperText: ' ',
+	       	passhelperText: ' ',
 
 		}
 	}
+
+	 
+	handldeUserField = (event) => {
+
+		  if(event.target.value.length <= 0){
+		    this.setState({
+		      userTextfield: true,
+		      userhelperText: 'Username is required',
+		      username:event.target.value,
+		    })
+		  }
+		  else{
+		    this.setState({
+		      userTextfield: false,
+		      userhelperText: ' ',
+		      username:event.target.value,
+		    })
+		  }
+		}
+
+		hanldePassField = (event) => {
+
+		  if(event.target.value.length <= 0){
+		    this.setState({
+		      passwordTextfield: true,
+		      passhelperText: 'Password is required',
+		      password: event.target.value,
+		    })
+		  }
+		  else{
+		    this.setState({
+		      passwordTextfield: false,
+		      passhelperText: ' ',
+		      password: event.target.value,
+		    })
+		  }
+		}
+	
   render() {
 
   	const {classes} = this.props
@@ -75,28 +119,39 @@ class SignIn extends React.Component{
 					<AccountCircle className={classes.marginBottom} style={{color: 'grey', fontSize: '60px'}} />
 				    
 					
-					<TextField className={classes.marginBottom}
+					<TextField 
+						onBlur={(event) => this.handldeUserField(event)} 
+						error={this.state.userTextfield}
 				        id="outlined-dense"
 				        required
 				        label="Username"
+				        helperText={this.state.userhelperText}
 				        fullWidth
 				        variant="outlined"
+				        margin="normal"
 				      />
 				    
 				      <TextField className={classes.marginBottom}
 				        id="outlined-dense"
+				        onBlur={(event) => this.hanldePassField(event)} 
+				        error= {this.state.passwordTextfield}
 				        required
 				        label="Password"
+				        helperText={this.state.passhelperText}
 				        type="password"
 				        fullWidth
 				        variant="outlined"
 				      />
+				    
 				      
-				      <Button variant="contained" color="primary" fullWidth className={classes.button} style={{marginBottom: '20px'}}>
+				      <Button variant="contained" color="primary" fullWidth className={classes.button} >
 				        LogIn
 				      </Button>
 
 				   </Grid>
+
+				    
+
 				</Container>
 			
       </React.Fragment>
