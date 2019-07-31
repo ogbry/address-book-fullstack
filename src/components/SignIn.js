@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {NavLink} from "react-router-dom";
+import axios from 'axios';
 //Material-UI imports
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -11,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Snackbar from '@material-ui/core/Snackbar';
 import FormHelperText from '@material-ui/core/FormHelperText';
+
 
 const styles = {	
 	inputBox: {
@@ -38,31 +40,34 @@ class SignIn extends React.Component{
 		super();
 
 		this.state = {
-			username: '',
-	       	password: '',
+			uName: '',
+	       	pWord: '',
 	       	userTextfield: false,
 	       	passwordTextfield: false,
 	       	userhelperText: ' ',
 	       	passhelperText: ' ',
-
+	       	username: '',
+	       	password: '',
+	       	displayValue: 'none',
+	       	errorType: '',
 		}
 	}
 
 	 
-	handldeUserField = (event) => {
+		handldeUserField = (event) => {
 
 		  if(event.target.value.length <= 0){
 		    this.setState({
 		      userTextfield: true,
 		      userhelperText: 'Username is required',
-		      username:event.target.value,
+		      uName:event.target.value,
 		    })
 		  }
 		  else{
 		    this.setState({
 		      userTextfield: false,
 		      userhelperText: ' ',
-		      username:event.target.value,
+		      uName:event.target.value,
 		    })
 		  }
 		}
@@ -73,25 +78,63 @@ class SignIn extends React.Component{
 		    this.setState({
 		      passwordTextfield: true,
 		      passhelperText: 'Password is required',
-		      password: event.target.value,
+		      pWord: event.target.value,
 		    })
 		  }
 		  else{
 		    this.setState({
 		      passwordTextfield: false,
 		      passhelperText: ' ',
-		      password: event.target.value,
+		      pWord: event.target.value,
 		    })
 		  }
 		}
-	
+		
+		formSubmission(e){
+			e.preventDefault();
+
+			axios.post('http://localhost:3001/signin', {
+
+				username: this.state.username,
+				password: this.state.password,
+
+			})
+			.then( res => {
+				if(res.data.error === undefined){
+					this.props.history.push('/addressbook')
+
+					localStorage.setItem('token', res.data.token)
+				}
+				else if(res.data.error === 'Incorrect Password'){
+					this.setState({
+						displayValue: 'flex',
+						errorType: 'Password is Incorrect',
+
+					})
+				}
+				else if(res.data.error === 'Incorrect Password'){
+					this.setState({
+						displayValue: 'flex',
+						errorType: 'Username is Incorrect',
+
+					})
+				}
+				else {
+					this.setState({
+						displayValue: 'flex',
+						errorType: 'User not registered, Click Sign Up',
+
+					})
+				}
+			})
+		}
+
   render() {
 
   	const {classes} = this.props
 
     return (
       <React.Fragment>
-        
 
 			<Container className={classes.inputBox}>
 				<Grid
@@ -118,9 +161,11 @@ class SignIn extends React.Component{
 				>	
 					<AccountCircle className={classes.marginBottom} style={{color: 'grey', fontSize: '60px'}} />
 				    
-					
+					<form noValidate autoComplete="off"  
+             		 onSubmit={(e) => this.formSubmission(e)}
+             		  >
 					<TextField 
-						onBlur={(event) => this.handldeUserField(event)} 
+						onBlur={(event) => this.handldeUserField(event)}
 						error={this.state.userTextfield}
 				        id="outlined-dense"
 				        required
@@ -129,6 +174,9 @@ class SignIn extends React.Component{
 				        fullWidth
 				        variant="outlined"
 				        margin="normal"
+				        onChange={(e) => this.setState({
+				        	username: e.target.value
+				        })}
 				      />
 				    
 				      <TextField className={classes.marginBottom}
@@ -141,17 +189,31 @@ class SignIn extends React.Component{
 				        type="password"
 				        fullWidth
 				        variant="outlined"
+				        onChange={(e) => this.setState({
+				        	password: e.target.value
+				        })}
 				      />
 				    
 				      
-				      <Button variant="contained" color="primary" fullWidth className={classes.button} >
+				      <Button variant="contained" type='submit' color="primary" fullWidth className={classes.button} >
 				        LogIn
 				      </Button>
 
+
+				      <Grid
+						  container
+						  justify="center"
+						  alignItems="center"
+						  style={{marginTop: '10px'}}
+						>
+
+						<FormHelperText id="component-error-text" style={{color: 'red', display: `${ this.state.displayValue }`}}>{this.state.errorType}</FormHelperText>
+
+				      </Grid>
+				      </form>
 				   </Grid>
 
 				    
-
 				</Container>
 			
       </React.Fragment>

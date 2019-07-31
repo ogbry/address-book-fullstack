@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {NavLink} from "react-router-dom";
+import axios from 'axios';
 
 //Material-UI imports
 import Grid from '@material-ui/core/Grid';
@@ -10,6 +11,9 @@ import Button from '@material-ui/core/Button';
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+
 
 const styles = {
 	inputBox: {
@@ -38,10 +42,30 @@ class SignUp extends React.Component{
 
 		this.state = {
 
-
+			fName: '',
+			lName: '',
+			email: '',
+			username: '',
+			password: '',
 
 		}
 	}
+
+	formSignUp(e){
+		e.preventDefault();
+
+		axios.post('http://localhost:3001/signup' , {
+
+			firstname: this.state.fName,
+			lastname: this.state.lName,
+			email: this.state.email,
+			username: this.state.username,
+			password: this.state.password
+
+		}).then(res => console.log(res.data));
+
+	}
+
   render() {
 
   	const {classes} = this.props
@@ -76,13 +100,17 @@ class SignUp extends React.Component{
 				>	
 					<AccountCircle className={classes.marginBottom} style={{color: 'grey', fontSize: '60px',}} />
 					
-				    
+				    <form noValidate autoComplete="off"  
+             		 onSubmit={(e) => this.formSignUp(e)} >
 				    <TextField className={classes.marginBottom}
 				        id="outlined-dense"
 				        required
 				        fullWidth
 				        label="First Name"
 				        variant="outlined"
+				        onChange={(e) => this.setState({
+				        	fName: e.target.value
+				        })}
 				      />
 
 				    <TextField className={classes.marginBottom}
@@ -91,6 +119,9 @@ class SignUp extends React.Component{
 				        fullWidth
 				        label="Last Name"
 				        variant="outlined"
+				        onChange={(e) => this.setState({
+				        	lName: e.target.value
+				        })}
 				      />
 
 					<TextField className={classes.marginBottom}
@@ -99,6 +130,9 @@ class SignUp extends React.Component{
 				        label="Email"
 				        fullWidth
 				        variant="outlined"
+				        onChange={(e) => this.setState({
+				        	email: e.target.value
+				        })}
 				      />
 
 					<TextField className={classes.marginBottom}
@@ -107,6 +141,9 @@ class SignUp extends React.Component{
 				        label="Username"
 				        fullWidth
 				        variant="outlined"
+				        onChange={(e) => this.setState({
+				        	username: e.target.value
+				        })}
 				      />
 				    
 				      <TextField className={classes.marginBottom}
@@ -116,12 +153,24 @@ class SignUp extends React.Component{
 				        type="password"
 				        fullWidth
 				        variant="outlined"
+				        onChange={(e) => this.setState({
+				        	password: e.target.value
+				        })}
 				      />
 				      
 				      
-				      <Button variant="contained" color="secondary" fullWidth className={classes.button}>
+				      <Button variant="contained" type='submit' color="secondary" fullWidth className={classes.button}>
 				        Sign Up
 				      </Button>
+				      <Grid
+						  container
+						  justify="center"
+						  alignItems="center"
+						  style={{marginTop: '10px'}}
+						>
+
+				      </Grid>
+				      </form>
 				   </Grid>
 				</Container>
 			

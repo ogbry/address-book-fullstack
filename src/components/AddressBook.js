@@ -1,6 +1,5 @@
 import React from 'react';
 
-import {NavLink} from "react-router-dom";
 import AddressBookTable from './AddressBookTable.js';
 import FilterTool from './FilterTool.js';
 import Grid from '@material-ui/core/Grid';
@@ -19,7 +18,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 
@@ -67,6 +65,15 @@ class AddressBook extends React.Component{
 		}
 	}
 
+
+	componentDidMount(){
+		if(localStorage('token') == null ){
+			this.props.history.push('/')
+		}
+		else{
+			this.props.history.push('/addressbook')
+		}
+	}
 
 
   render() {

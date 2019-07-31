@@ -1,7 +1,5 @@
 import React from 'react';
 
-import {NavLink} from "react-router-dom";
-
 import {withStyles} from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container';
 
@@ -34,15 +32,13 @@ class AdressBookTable extends React.Component{
 
     return (
 
-    	
-    	<React.Fragment>
     	<Container maxWidth="xl" className={classes.root} >
     		
-	          
+	          sadasd
 	            
 	    </Container>
 
-		</React.Fragment>
+
     )
 
   }
