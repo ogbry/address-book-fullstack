@@ -21,7 +21,9 @@ const styles = {
 		width: '450px',
 		marginTop: '50px',
 		backgroundColor: '#f0f0f0',
-
+		['@media (max-width:450px)']: {
+         width: '100%',
+       },
 	},
 	marginBottom: {
 		marginBottom: '20px',
@@ -110,7 +112,6 @@ class SignIn extends React.Component<Props, State>{
 
 					localStorage.setItem('token', res.data.token)
 					localStorage.setItem('id', res.data.id)
-					console.log(res.data.token)
 					window.location.reload(true);
 				}
 				else if(res.data.error === 'Incorrect Password'){
@@ -185,6 +186,7 @@ class SignIn extends React.Component<Props, State>{
 						onBlur={(event) => this.handldeUserField(event)}
 						error={this.state.userTextfield}
 				        required
+				        id="standard-required"
 				        label="Username"
 				        helperText={this.state.userhelperText}
 				        fullWidth
@@ -201,6 +203,8 @@ class SignIn extends React.Component<Props, State>{
 				        label="Password"
 				        helperText={this.state.passhelperText}
 				        type="password"
+				        required
+				        id="standard-required"
 				        fullWidth
 				        variant="outlined"
 				        onChange={(e) => this.setState({

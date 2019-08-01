@@ -22,6 +22,9 @@ const styles = {
 		width: '450px',
 		marginTop: '50px',
 		backgroundColor: '#f0f0f0',
+		['@media (max-width:450px)']: {
+         width: '100%',
+       },
 	},
 	marginBottom: {
 		marginBottom: '20px',
@@ -31,6 +34,9 @@ const styles = {
 	},
 		link: {
 		textDecoration: 'none',
+	},
+	textField: {
+		marginBottom: '5px',
 	}
 }
 
@@ -47,9 +53,24 @@ class SignUp extends React.Component{
 			email: '',
 			username: '',
 			password: '',
-
+			errorHelperText: ' ',
 		}
 	}
+
+	handleFields = (event) => {
+
+		  if(event.target.value.length <= 0){
+		    this.setState({
+		      errorHelperText: 'This field is required',
+		    })
+		  }
+		  else{
+		  	this.setState({
+		  		errorHelperText: ' ',
+		  	})
+		  }
+		  
+		}
 
 	formSignUp(e){
 		e.preventDefault();
@@ -100,11 +121,16 @@ class SignUp extends React.Component{
 				>	
 					<AccountCircle className={classes.marginBottom} style={{color: 'grey', fontSize: '60px',}} />
 					
-				    <form noValidate autoComplete="off"  
+				    <form 
              		 onSubmit={(e) => this.formSignUp(e)} >
-				    <TextField className={classes.marginBottom}
-				        required
+             		 
+
+				    <TextField className={classes.textField}
+				        onBlur={(event) => this.handleFields(event)}
 				        fullWidth
+				        required
+				        margin="normal"
+				        id="standard-required"
 				        label="First Name"
 				        variant="outlined"
 				        onChange={(e) => this.setState({
@@ -112,41 +138,51 @@ class SignUp extends React.Component{
 				        })}
 				      />
 
-				    <TextField className={classes.marginBottom}
-				        required
-				        fullWidth
+				    <TextField className={classes.textField}
 				        label="Last Name"
+				        fullWidth
+				        required
+				        margin="normal"
+				        id="standard-required"
 				        variant="outlined"
 				        onChange={(e) => this.setState({
 				        	lName: e.target.value
 				        })}
 				      />
 
-					<TextField className={classes.marginBottom}
-				        required
+					<TextField className={classes.textField}
+				        onBlur={(event) => this.handleFields(event)}
 				        label="Email"
 				        fullWidth
+				        required
+				        margin="normal"
+				        id="standard-required"
 				        variant="outlined"
 				        onChange={(e) => this.setState({
 				        	email: e.target.value
 				        })}
 				      />
 
-					<TextField className={classes.marginBottom}
-				        required
+					<TextField className={classes.textField}
 				        label="Username"
 				        fullWidth
+				        required
+				        id="standard-required"
 				        variant="outlined"
+				        margin="normal"
 				        onChange={(e) => this.setState({
 				        	username: e.target.value
 				        })}
 				      />
 				    
-				      <TextField className={classes.marginBottom}
-				        required
+				      <TextField style={{marginBottom: '10px'}}
 				        label="Password"
+				        helperText={this.state.errorHelperText}
 				        type="password"
 				        fullWidth
+				        required
+				        margin="normal"
+				        id="standard-required"
 				        variant="outlined"
 				        onChange={(e) => this.setState({
 				        	password: e.target.value

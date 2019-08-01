@@ -17,13 +17,21 @@ const styles = {
 		marginTop: '20px',
 		height: '80vh',
 		backgroundColor: '#f0f0f0',
+		['@media (max-width:450px)']: {
+         height: '70vh',
+       },
+		
 	},
 	paper: {
 		overflowX: 'auto',
 		overflowY: 'auto',
 		width: '100%',
 		height: '75vh',
-		marginTop: '20px',	}
+		marginTop: '20px',	
+		['@media (max-width:450px)']: {
+         height: '55vh',
+       },
+	},
 }
 
 const rows = [
@@ -54,20 +62,20 @@ class AdressBookTable extends React.Component{
 
 
 	// componentDidMount(){
- //        fetch(`http://localhost:9000/api/contacts/${localStorage.getItem('userId')}`, {
- //            method: 'GET',
- //            headers:{
- //                'Content-Type': 'application/json',
- //                'Authorization': 'Bearer ' +localStorage.getItem('token'),
- //            }
- //        })
- //        .then(data => data.json())
- //        .then(result => {
- //            this.setState({
- //                contacts: result
- //            })
- //        })
- //    }
+	 //        fetch(`http://localhost:9000/api/contacts/${localStorage.getItem('userId')}`, {
+	 //            method: 'GET',
+	 //            headers:{
+	 //                'Content-Type': 'application/json',
+	 //                'Authorization': 'Bearer ' +localStorage.getItem('token'),
+	 //            }
+	 //        })
+	 //        .then(data => data.json())
+	 //        .then(result => {
+	 //            this.setState({
+	 //                contacts: result
+	 //            })
+	 //        })
+	 //    }
 
   render() {
 
@@ -80,8 +88,8 @@ class AdressBookTable extends React.Component{
     		<Paper className={classes.paper}>
 	        <Table className={classes.table}>
 		        <TableHead>
-		          <TableRow>
-		            <TableCell>Dessert (100g serving)</TableCell>
+		          <TableRow >
+		            <TableCell >Dessert (100g serving)</TableCell>
 		            <TableCell align="right">Calories</TableCell>
 		            <TableCell align="right">Fat&nbsp;(g)</TableCell>
 		            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
