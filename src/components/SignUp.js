@@ -21,7 +21,7 @@ const styles = {
 		padding: '30px',
 		width: '450px',
 		marginTop: '50px',
-
+		backgroundColor: '#f0f0f0',
 	},
 	marginBottom: {
 		marginBottom: '20px',
@@ -103,7 +103,6 @@ class SignUp extends React.Component{
 				    <form noValidate autoComplete="off"  
              		 onSubmit={(e) => this.formSignUp(e)} >
 				    <TextField className={classes.marginBottom}
-				        id="outlined-dense"
 				        required
 				        fullWidth
 				        label="First Name"
@@ -114,7 +113,6 @@ class SignUp extends React.Component{
 				      />
 
 				    <TextField className={classes.marginBottom}
-				        id="outlined-dense"
 				        required
 				        fullWidth
 				        label="Last Name"
@@ -125,7 +123,6 @@ class SignUp extends React.Component{
 				      />
 
 					<TextField className={classes.marginBottom}
-				        id="outlined-dense"
 				        required
 				        label="Email"
 				        fullWidth
@@ -136,7 +133,6 @@ class SignUp extends React.Component{
 				      />
 
 					<TextField className={classes.marginBottom}
-				        id="outlined-dense"
 				        required
 				        label="Username"
 				        fullWidth
@@ -147,7 +143,6 @@ class SignUp extends React.Component{
 				      />
 				    
 				      <TextField className={classes.marginBottom}
-				        id="outlined-dense"
 				        required
 				        label="Password"
 				        type="password"

@@ -1,4 +1,6 @@
 import React from 'react';
+import axios from 'axios';
+
 
 import AddressBookTable from './AddressBookTable.js';
 import FilterTool from './FilterTool.js';
@@ -25,7 +27,6 @@ import TextField from '@material-ui/core/TextField';
 const styles = {
 	root: {
 		fontSize: 'calc(0.75em + 1vmin)',
-
 	},
 	title: {
 		fontSize: '1.2em',
@@ -52,29 +53,91 @@ const styles = {
 }
 
 
-class AddressBook extends React.Component{
+class AddressBook extends React.Component<Props, State>{
 
 
 	constructor(){
 		super();
 
+		
+
 		this.state = {
 
 			open: false,
+			fName: '',
+			lName: '',
+			mobile_phone: '',
+			work_phone: '',
+			home_phone: '',
+			email: '',
+			city: '',
+			state: '',
+			postal_code: '',
+			country: '',
 
 		}
+
+		
 	}
+
 
 
 	componentDidMount(){
-		if(localStorage('token') == null ){
-			this.props.history.push('/')
-		}
-		else{
+		const token = localStorage.getItem('token')
+		
+		console.log(token)
+		if(token != null) {
 			this.props.history.push('/addressbook')
 		}
+		else{
+			this.props.history.push('/')
+		}
+		
 	}
 
+	logout(e){
+
+		this.props.history.push('/')
+    	localStorage.clear()
+
+	}
+
+
+	formCreateContact(e){
+		e.preventDefault();
+
+		const id = localStorage.getItem('id')
+		
+		console.log(this.state.fName,this.state.lName,
+				this.state.home_phone,
+				this.state.mobile_phone,
+				this.state.work_phone,
+				this.state.email,
+				this.state.city,
+				this.state.state_or_province,
+				this.state.postal_code,
+				this.state.country,)
+
+		axios.post('http://localhost:3001/createcontact' , {
+
+			id: id,
+			first_name: this.state.fName,
+			last_name: this.state.lName,
+			home_phone: this.state.home_phone,
+			mobile_phone: this.state.mobile_phone,
+			work_phone: this.state.work_phone,
+			email: this.state.email,
+			city: this.state.city,
+			state_or_province: this.state.state_or_province,
+			postal_code: this.state.postal_code,
+			country: this.state.country,
+
+		}).then(res => console.log(res.data))
+		.catch(err => {
+	      console.error(err);
+	    });  
+
+	}	
 
   render() {
 
@@ -128,7 +191,7 @@ class AddressBook extends React.Component{
 	                 })}/>
 	                 </Tooltip>
 	                 <Tooltip title="Logout">
-	                 <ExitToApp className={classes.exitIcon} />
+	                 <ExitToApp onClick={(e) => this.logout(e)} className={classes.exitIcon} />
 	                 </Tooltip>
 	                </Box>
 	                </Grid>
@@ -143,7 +206,12 @@ class AddressBook extends React.Component{
 
 	            <Dialog fullWidth maxWidth="sm" open={this.state.open}   aria-labelledby="form-dialog-title">
 			        <DialogTitle id="form-dialog-title">New Contact</DialogTitle>
+
+			        <form noValidate autoComplete="off"  
+             		 	onSubmit={(e) => this.formCreateContact(e)} >
 			        <DialogContent >
+
+
 			          <Grid
 						  container 
 						  direction="row"
@@ -159,6 +227,9 @@ class AddressBook extends React.Component{
 				            label="First Name"
 				            type="text"
 				            required
+				            onChange={(e) => this.setState({
+				        	fName: e.target.value
+				        })}
 				          />
 
 				          <TextField
@@ -167,6 +238,9 @@ class AddressBook extends React.Component{
 				            id="name"
 				            label="Last Name"
 				            type="text"
+				            onChange={(e) => this.setState({
+				        	lName: e.target.value
+				        })}
 				          />
 
 
@@ -178,13 +252,16 @@ class AddressBook extends React.Component{
 						  justify="space-around"
 						  alignItems="center"
 						>
-
+						
 				          <TextField
 				          	className={classes.textField}
 				            margin="dense"
 				            id="name"
 				            label="Mobile Phone Number"
 				            type="number"
+				            onChange={(e) => this.setState({
+				        	mobile_phone: e.target.value
+				        })}
 				          />
 
 				          <TextField
@@ -193,10 +270,13 @@ class AddressBook extends React.Component{
 				            id="name"
 				            label="Work Phone Number"
 				            type="number"
+				            onChange={(e) => this.setState({
+				        	work_phone: e.target.value
+				        })}
 				          />
 
 				      </Grid>
-
+				      
 				      <Grid
 						  container 
 						  direction="row"
@@ -210,6 +290,9 @@ class AddressBook extends React.Component{
 				            id="name"
 				            label="Home Phone Number"
 				            type="number"
+				            onChange={(e) => this.setState({
+				        	home_phone: e.target.value
+				        })}
 				          />
 
 				          <TextField
@@ -218,6 +301,9 @@ class AddressBook extends React.Component{
 				            id="name"
 				            label="Email"
 				            type="email"
+				            onChange={(e) => this.setState({
+				        	email: e.target.value
+				        })}
 				          />
 
 				      </Grid>
@@ -235,6 +321,9 @@ class AddressBook extends React.Component{
 				            id="name"
 				            label="City"
 				            type="text"
+				            onChange={(e) => this.setState({
+				        	city: e.target.value
+				        })}
 				          />
 
 				          <TextField
@@ -243,6 +332,9 @@ class AddressBook extends React.Component{
 				            id="name"
 				            label="State/Province"
 				            type="text"
+				            onChange={(e) => this.setState({
+				        	state_or_province: e.target.value
+				        })}
 				          />
 				          
 				      </Grid>
@@ -260,6 +352,9 @@ class AddressBook extends React.Component{
 				            id="name"
 				            label="Postal Code"
 				            type="number"
+				            onChange={(e) => this.setState({
+				        	postal_code: e.target.value
+				        })}
 				          />
 
 				          <TextField
@@ -268,6 +363,9 @@ class AddressBook extends React.Component{
 				            id="name"
 				            label="Country"
 				            type="text"
+				            onChange={(e) => this.setState({
+				        	country: e.target.value
+				        })}
 				          />
 
 				          
@@ -276,7 +374,7 @@ class AddressBook extends React.Component{
 
 			        </DialogContent>
 			        <DialogActions>
-			          <Button color="primary">
+			          <Button type='submit' color="primary">
 			            Add
 			          </Button>
 			          <Button onClick={() => this.setState({
@@ -284,8 +382,11 @@ class AddressBook extends React.Component{
 	                 })} color="primary">
 			            Cancel
 			          </Button>
+			         
 			        </DialogActions>
+			        </form>
 			    </Dialog>
+			    
 	    </Container>
 
 

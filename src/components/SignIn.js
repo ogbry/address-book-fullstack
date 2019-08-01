@@ -20,6 +20,7 @@ const styles = {
 		padding: '30px',
 		width: '450px',
 		marginTop: '50px',
+		backgroundColor: '#f0f0f0',
 
 	},
 	marginBottom: {
@@ -33,7 +34,7 @@ const styles = {
 	}
 }
 
-class SignIn extends React.Component{
+class SignIn extends React.Component<Props, State>{
 
 
 	constructor(){
@@ -89,6 +90,8 @@ class SignIn extends React.Component{
 		    })
 		  }
 		}
+
+		
 		
 		formSubmission(e){
 			e.preventDefault();
@@ -97,13 +100,17 @@ class SignIn extends React.Component{
 
 				username: this.state.username,
 				password: this.state.password,
+				
 
 			})
 			.then( res => {
+				console.log(res.data)
 				if(res.data.error === undefined){
 					this.props.history.push('/addressbook')
 
 					localStorage.setItem('token', res.data.token)
+					localStorage.setItem('id', res.data.id)
+					console.log(res.data.token)
 				}
 				else if(res.data.error === 'Incorrect Password'){
 					this.setState({
@@ -127,6 +134,15 @@ class SignIn extends React.Component{
 					})
 				}
 			})
+		}
+
+		componentDidMount(){
+			if(localStorage.getItem('token') != null){
+				this.props.history.push('/addressbook');
+			}
+			else{
+				this.props.history.push('/')
+			}
 		}
 
   render() {
@@ -167,7 +183,6 @@ class SignIn extends React.Component{
 					<TextField 
 						onBlur={(event) => this.handldeUserField(event)}
 						error={this.state.userTextfield}
-				        id="outlined-dense"
 				        required
 				        label="Username"
 				        helperText={this.state.userhelperText}
@@ -180,10 +195,8 @@ class SignIn extends React.Component{
 				      />
 				    
 				      <TextField className={classes.marginBottom}
-				        id="outlined-dense"
 				        onBlur={(event) => this.hanldePassField(event)} 
 				        error= {this.state.passwordTextfield}
-				        required
 				        label="Password"
 				        helperText={this.state.passhelperText}
 				        type="password"

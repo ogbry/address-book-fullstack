@@ -3,6 +3,8 @@ const massive = require('massive');
 const cors = require("cors");
 
 const users = require('./controllers/users.js');
+const contacts = require('./controllers/contacts.js');
+
 
 
 massive({
@@ -20,6 +22,7 @@ massive({
 
   app.post('/signup', users.create);
   app.post('/signin', users.login);
+  app.post('/createcontact', contacts.createContact);
 
 
 
