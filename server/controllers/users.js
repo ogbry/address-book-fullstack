@@ -22,7 +22,7 @@ function create(req, res) {
        );
      })
      .then(user => {
-       const token = jwt.sign({ userId: user.id }, secret);
+       const token = jwt.sign({ userid: user.id }, secret);
        res.status(201).json({ ...user, token });
      })
      .catch(err => {
@@ -53,7 +53,7 @@ function login(req, res) {
           throw new Error('Incorrect Password');
         }
 
-        const token = jwt.sign({ userId: user.id }, secret);
+        const token = jwt.sign({ userid: user.id }, secret);
         delete user.password;
         res.status(200).json({ ...user, token });
       });
@@ -69,6 +69,7 @@ function login(req, res) {
       }
     });
 }
+
 
 module.exports = {
   create,

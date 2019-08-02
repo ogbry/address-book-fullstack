@@ -103,7 +103,7 @@ class SignUp extends React.Component{
 				  alignItems="center"
 				  className={classes.marginBottom}
 				>	
-					<NavLink to='/' exact activeStyle={{borderBottom: 'solid 1px'}} className={classes.link}><Typography style={{color: 'grey',}}>
+					<NavLink to='/signin' exact activeStyle={{borderBottom: 'solid 1px'}} className={classes.link}><Typography style={{color: 'grey',}}>
 					        Sign In
 					</Typography></NavLink>
 					

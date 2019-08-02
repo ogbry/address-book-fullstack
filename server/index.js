@@ -24,6 +24,7 @@ massive({
   app.post('/signin', users.login);
   app.post('/createcontact', contacts.createContact);
 
+  app.get('/addressbook/:id', contacts.contactList);
 
 
   const PORT = 3001;

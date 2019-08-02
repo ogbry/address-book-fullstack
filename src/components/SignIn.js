@@ -108,10 +108,11 @@ class SignIn extends React.Component<Props, State>{
 			.then( res => {
 				console.log(res.data)
 				if(res.data.error === undefined){
-					this.props.history.push('/addressbook')
+					this.props.history.push('/')
 
 					localStorage.setItem('token', res.data.token)
 					localStorage.setItem('id', res.data.id)
+
 					window.location.reload(true);
 				}
 				else if(res.data.error === 'Incorrect Password'){
@@ -140,10 +141,10 @@ class SignIn extends React.Component<Props, State>{
 
 		componentDidMount(){
 			if(localStorage.getItem('token') != null){
-				this.props.history.push('/addressbook');
+				this.props.history.push('/');
 			}
 			else{
-				this.props.history.push('/')
+				this.props.history.push('/signin')
 			}
 		}
 
@@ -162,7 +163,7 @@ class SignIn extends React.Component<Props, State>{
 				  alignItems="center"
 				  className={classes.marginBottom}
 				>	
-					<NavLink to='/' exact activeStyle={{borderBottom: 'solid 1px'}} className={classes.link}><Typography style={{color: 'grey',}}>
+					<NavLink to='/signin' exact activeStyle={{borderBottom: 'solid 1px'}} className={classes.link}><Typography style={{color: 'grey',}}>
 					        Sign In
 					</Typography></NavLink>
 					

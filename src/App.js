@@ -13,9 +13,9 @@ class App extends React.Component{
     return (
       <React.Fragment>
         <BrowserRouter>
-          <Route exact path="/" component={SignIn} />
+          <Route exact path="/" component={AddresBook} />
+          <Route path="/signin" component={SignIn} />
           <Route path="/signup" component={SignUp} />
-          <Route path="/addressbook" component={AddresBook} />
         </BrowserRouter>
        
       </React.Fragment>

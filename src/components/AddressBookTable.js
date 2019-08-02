@@ -1,14 +1,21 @@
 import React from 'react';
 
+import axios from 'axios';
 import {withStyles} from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
 
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import ContactPhone from '@material-ui/icons/ContactPhone';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
 
 const styles = {
 	root: {
@@ -20,7 +27,6 @@ const styles = {
 		['@media (max-width:450px)']: {
          height: '70vh',
        },
-		
 	},
 	paper: {
 		overflowX: 'auto',
@@ -32,18 +38,27 @@ const styles = {
          height: '55vh',
        },
 	},
-}
+	card: {
+	    width: '250px',
+	    margin: '10px',
+	    
+	},
+	  wrapper: {
+	  	display: 'flex',
+	    flexWrap: 'wrap',
+	    flexDirection: 'row',
+	    alignItems: 'flex-start',
+	    justifyContent: 'flex-start',
+	    ['@media (max-width:450px)']: {
+         height: '70vh',
+       },
+	},
+	textField: {
+		['@media (max-width:552px)']: {
+         width: '100%',
+       },
 
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
+	}
 }
 
 
@@ -56,62 +71,264 @@ class AdressBookTable extends React.Component{
 		this.state = {
 
 			contacts: [],
-
+			
+			open: false,
 		}
 	}
 
 
-	// componentDidMount(){
-	 //        fetch(`http://localhost:9000/api/contacts/${localStorage.getItem('userId')}`, {
-	 //            method: 'GET',
-	 //            headers:{
-	 //                'Content-Type': 'application/json',
-	 //                'Authorization': 'Bearer ' +localStorage.getItem('token'),
-	 //            }
-	 //        })
-	 //        .then(data => data.json())
-	 //        .then(result => {
-	 //            this.setState({
-	 //                contacts: result
-	 //            })
-	 //        })
-	 //    }
+	componentDidMount(){
+			const uId = localStorage.getItem('id');
+
+	        axios.get(`http://localhost:3001/addressbook/` +uId)
+	        
+	        .then(result => {
+	        	
+	        	this.setState({
+	        		contacts: result.data
+	        	})
+	    })
+	}
+
+	handleOpenDialog = (id) => {
+		console.log(id)
+		this.setState({
+			open: true,
+		})
+
+	}	
+
 
   render() {
 
   	const {classes} = this.props
-  		
 
     return (
 
     	<Container maxWidth="xl" className={classes.root} >
-    		<Paper className={classes.paper}>
-	        <Table className={classes.table}>
-		        <TableHead>
-		          <TableRow >
-		            <TableCell >Dessert (100g serving)</TableCell>
-		            <TableCell align="right">Calories</TableCell>
-		            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-		            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-		            <TableCell align="right">Protein&nbsp;(g)</TableCell>
-		          </TableRow>
-		        </TableHead>
-		        <TableBody>
-		          {rows.map(row => (
-		            <TableRow key={row.name}>
-		              <TableCell component="th" scope="row">
-		                {row.name}
-		              </TableCell>
-		              <TableCell align="right">{row.calories}</TableCell>
-		              <TableCell align="right">{row.fat}</TableCell>
-		              <TableCell align="right">{row.carbs}</TableCell>
-		              <TableCell align="right">{row.protein}</TableCell>
-		            </TableRow>
-		          ))}
-		        </TableBody>
-		    </Table>
-		    </Paper>
-	            
+    	<Grid container className={classes.wrapper}>
+    	{
+
+    		this.state.contacts.map( item => (
+    				
+	    			<Card key={item.contactid} className={classes.card}>
+	    			
+				        <CardContent>
+				        <Grid
+						  container
+						  direction="row"
+						  justify="flex-start"
+						  alignItems="center"
+						>	
+							<ContactPhone style={{fontSize: '1.5em', color: '#3f51b5'}} /> &nbsp;
+				          <Typography style={{fontSize: '.7em', }} gutterBottom variant="h5" component="h2">
+				            {item.first_name}   {item.last_name}
+				          </Typography>
+				          </Grid>
+				          <Typography variant="body2" color="textSecondary">
+				            {item.mobile_phone}
+				          </Typography>
+				        </CardContent>
+					      <CardActions >
+					        <Button size="small" color="primary" 
+					        	onClick={() => this.handleOpenDialog(item.id)}
+					         >
+					          More
+					        </Button>
+					        <Button size="small" color="primary">
+					          Edit
+					        </Button>
+					        <Button size="small" color="primary">
+					          Remove
+					        </Button>
+					      </CardActions>
+				    </Card>
+				  
+    			))
+    		
+
+		}    		
+	    </Grid> 
+	    		<Dialog fullWidth maxWidth="sm" open={this.state.open}   aria-labelledby="form-dialog-title">
+			        <DialogTitle id="form-dialog-title">View</DialogTitle>
+			        <DialogContent >
+
+
+			          <Grid
+						  container 
+						  direction="row"
+						  justify="space-around"
+						  alignItems="center"
+						>
+
+				          <TextField
+				          	className={classes.textField}
+				            margin="dense"
+				            id="standard-read-only-input"
+				            label="First Name"
+				            value="W"
+				            type="text"
+				            InputProps={{
+					          readOnly: true,
+					        }}
+				          />
+
+				          <TextField
+				          	className={classes.textField}
+				            margin="dense"
+				            id="standard-read-only-input"
+				            value="W"
+				            label="Last Name"
+				            type="text"
+				            InputProps={{
+					          readOnly: true,
+					        }}
+				          />
+
+
+				      </Grid>
+
+				      <Grid
+						  container 
+						  direction="row"
+						  justify="space-around"
+						  alignItems="center"
+						>
+						
+				          <TextField
+				          	className={classes.textField}
+				            margin="dense"
+				            label="Mobile Phone Number"
+				            type="number"
+				            id="standard-read-only-input"
+				            value="W"
+				            InputProps={{
+					          readOnly: true,
+					        }}
+				          />
+
+				          <TextField
+				            className={classes.textField}
+				            margin="dense"
+				            id="standard-read-only-input"
+				            value="W"
+				            InputProps={{
+					          readOnly: true,
+					        }}
+				            label="Work Phone Number"
+				            type="number"
+				          />
+
+				      </Grid>
+				      
+				      <Grid
+						  container 
+						  direction="row"
+						  justify="space-around"
+						  alignItems="center"
+						>
+
+				          <TextField
+				            className={classes.textField}
+				            margin="dense"
+				            id="standard-read-only-input"
+				            value="W"
+				            InputProps={{
+					          readOnly: true,
+					        }}
+				            label="Home Phone Number"
+				            type="number"
+				          />
+
+				          <TextField
+				            className={classes.textField}
+				            margin="dense"
+				            id="standard-read-only-input"
+				            value="W"
+				            InputProps={{
+					          readOnly: true,
+					        }}
+				            label="Email"
+				            type="email"
+				          />
+
+				      </Grid>
+
+				      <Grid
+						  container 
+						  direction="row"
+						  justify="space-around"
+						  alignItems="center"
+						>
+
+				           <TextField
+				            className={classes.textField}
+				            margin="dense"
+				            id="standard-read-only-input"
+				            value="W"
+				            InputProps={{
+					          readOnly: true,
+					        }}
+				            label="City"
+				            type="text"
+				          />
+
+				          <TextField
+				            className={classes.textField}
+				            margin="dense"
+				            id="standard-read-only-input"
+				            value="W"
+				            InputProps={{
+					          readOnly: true,
+					        }}
+				            label="State/Province"
+				            type="text"
+				          />
+				          
+				      </Grid>
+
+				      <Grid
+						  container 
+						  direction="row"
+						  justify="space-around"
+						  alignItems="center"
+						>
+
+				          <TextField
+				            className={classes.textField}
+				            margin="dense"
+				            id="standard-read-only-input"
+				            value="W"
+				            InputProps={{
+					          readOnly: true,
+					        }}
+				            label="Postal Code"
+				            type="number"
+				          />
+
+				          <TextField
+				            className={classes.textField}
+				            margin="dense"
+				            id="standard-read-only-input"
+				            value="W"
+				            InputProps={{
+					          readOnly: true,
+					        }}
+				            label="Country"
+				            type="text"
+				          />
+
+				      </Grid>
+
+			        </DialogContent>
+			        <DialogActions>
+			          <Button onClick={() => this.setState({
+	                 		open: false,
+	                 })} color="primary">
+			            Close
+			          </Button>
+			        </DialogActions>
+			    </Dialog>
 	    </Container>
 
 

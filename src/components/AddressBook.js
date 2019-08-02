@@ -84,20 +84,21 @@ class AddressBook extends React.Component<Props, State>{
 
 	componentDidMount(){
 		const token = localStorage.getItem('token')
-		
-		console.log(token)
+		const getId = localStorage.getItem('id')
+
+
 		if(token != null) {
-			this.props.history.push('/addressbook')
+			this.props.history.push('/')
 		}
 		else{
-			this.props.history.push('/')
+			this.props.history.push('/signin')
 		}
 		
 	}
 
 	logout(e){
 
-		this.props.history.push('/')
+		this.props.history.push('/signin')
     	localStorage.clear()
 
 	}
@@ -368,8 +369,6 @@ class AddressBook extends React.Component<Props, State>{
 				        })}
 				          />
 
-				          
-				          
 				      </Grid>
 
 			        </DialogContent>

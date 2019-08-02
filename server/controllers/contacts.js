@@ -30,8 +30,8 @@ function createContact(req, res) {
 
         address_book: [
           {
-            userId: req.body.id,
-            contactId: undefined,
+            userid: req.body.id,
+            contactid: undefined,
           },
         ],
       },
@@ -46,6 +46,18 @@ function createContact(req, res) {
           
 }
 
+function contactList(req, res) {
+  const db = req.app.get('db');
+
+  const userId = req.params.id
+
+  db.query(`select * from contacts INNER JOIN address_book on contacts.id = address_book.contactid where address_book.userid = ${userId}`, [])
+       .then(data => {
+           res.status(200).json(data)
+       })
+}
+
 module.exports = {
   createContact,
+  contactList,
 };
