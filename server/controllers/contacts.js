@@ -57,7 +57,39 @@ function contactList(req, res) {
        })
 }
 
+function getById(req, res) {
+  const db = req.app.get('db');
+
+  db.contacts
+    .findOne(req.params.id)
+    .then(contact => res.status(200).json(contact))
+    .catch(err => {
+      console.error(err);
+      res.status(500).end();
+    });
+}
+
+function deleteById(req, res) {
+  const db = req.app.get('db');
+
+  console.log(req.params.id)
+
+  db.contacts
+    destroy({id: req.params.id})
+    .then(cont => res.status(200).json(cont))
+    .catch(err => {
+     res.status(500).end()
+   })
+}
+
 module.exports = {
   createContact,
   contactList,
+  getById,
+  deleteById,
 };
+
+
+
+
+

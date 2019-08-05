@@ -49,7 +49,6 @@ const styles = {
 
 	}
 
-	
 }
 
 
@@ -76,8 +75,6 @@ class AddressBook extends React.Component<Props, State>{
 			country: '',
 
 		}
-
-		
 	}
 
 

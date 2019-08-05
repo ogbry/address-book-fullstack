@@ -71,8 +71,8 @@ class AdressBookTable extends React.Component{
 		this.state = {
 
 			contacts: [],
-			
 			open: false,
+			fName: '', lName: '', homePhone: '', mobilePhone: '', workPhone: '', email: '', city: '', stateOrProvince: '', postalCode: '', country: '',
 		}
 	}
 
@@ -91,18 +91,51 @@ class AdressBookTable extends React.Component{
 	}
 
 	handleOpenDialog = (id) => {
-		console.log(id)
+
+		axios.get(`http://localhost:3001/addressbook/view/` +id)
+		.then(result => {
+	        	
+	        	this.setState({
+
+	        		fName: result.data.first_name, 
+	        		lName: result.data.last_name, 
+	        		homePhone: result.data.home_phone, 
+	        		mobilePhone: result.data.mobile_phone, 
+	        		workPhone: result.data.work_phone, 
+	        		email: result.data.email, 
+	        		city: result.data.city, 
+	        		stateOrProvince: result.data.state_or_province, 
+	        		postalCode: result.data.postal_code, 
+	        		country: result.data.country 
+
+	        		})
+
+	        	})
 		this.setState({
 			open: true,
 		})
+	}
 
-	}	
+	handleDelete = (id) => {
+        axios
+            .delete(`http://localhost:3001/addressbook/delete/` +id)
+            .then(res => {
+                console.log(res)
+            })
+            .catch(err => {
+                console.error(err)
+                if(err.response.status === 401){
+                    this.props.history.push('/')
+                }
+            })
+	}
 
 
   render() {
 
   	const {classes} = this.props
 
+  	 
     return (
 
     	<Container maxWidth="xl" className={classes.root} >
@@ -138,7 +171,9 @@ class AdressBookTable extends React.Component{
 					        <Button size="small" color="primary">
 					          Edit
 					        </Button>
-					        <Button size="small" color="primary">
+					        <Button size="small" color="primary"
+					        	onClick={() => this.handleDelete(item.id)}
+					        >
 					          Remove
 					        </Button>
 					      </CardActions>
@@ -165,8 +200,8 @@ class AdressBookTable extends React.Component{
 				          	className={classes.textField}
 				            margin="dense"
 				            id="standard-read-only-input"
+				            value={this.state.fName}
 				            label="First Name"
-				            value="W"
 				            type="text"
 				            InputProps={{
 					          readOnly: true,
@@ -177,7 +212,7 @@ class AdressBookTable extends React.Component{
 				          	className={classes.textField}
 				            margin="dense"
 				            id="standard-read-only-input"
-				            value="W"
+				            value={this.state.lName}
 				            label="Last Name"
 				            type="text"
 				            InputProps={{
@@ -201,7 +236,7 @@ class AdressBookTable extends React.Component{
 				            label="Mobile Phone Number"
 				            type="number"
 				            id="standard-read-only-input"
-				            value="W"
+				            value={this.state.mobilePhone}
 				            InputProps={{
 					          readOnly: true,
 					        }}
@@ -211,7 +246,7 @@ class AdressBookTable extends React.Component{
 				            className={classes.textField}
 				            margin="dense"
 				            id="standard-read-only-input"
-				            value="W"
+				            value={this.state.workPhone}
 				            InputProps={{
 					          readOnly: true,
 					        }}
@@ -232,7 +267,7 @@ class AdressBookTable extends React.Component{
 				            className={classes.textField}
 				            margin="dense"
 				            id="standard-read-only-input"
-				            value="W"
+				            value={this.state.homePhone}
 				            InputProps={{
 					          readOnly: true,
 					        }}
@@ -244,7 +279,7 @@ class AdressBookTable extends React.Component{
 				            className={classes.textField}
 				            margin="dense"
 				            id="standard-read-only-input"
-				            value="W"
+				            value={this.state.email}
 				            InputProps={{
 					          readOnly: true,
 					        }}
@@ -265,7 +300,7 @@ class AdressBookTable extends React.Component{
 				            className={classes.textField}
 				            margin="dense"
 				            id="standard-read-only-input"
-				            value="W"
+				            value={this.state.city}
 				            InputProps={{
 					          readOnly: true,
 					        }}
@@ -277,7 +312,7 @@ class AdressBookTable extends React.Component{
 				            className={classes.textField}
 				            margin="dense"
 				            id="standard-read-only-input"
-				            value="W"
+				            value={this.state.stateOrProvince}
 				            InputProps={{
 					          readOnly: true,
 					        }}
@@ -298,7 +333,7 @@ class AdressBookTable extends React.Component{
 				            className={classes.textField}
 				            margin="dense"
 				            id="standard-read-only-input"
-				            value="W"
+				            value={this.state.postalCode}
 				            InputProps={{
 					          readOnly: true,
 					        }}
@@ -310,7 +345,7 @@ class AdressBookTable extends React.Component{
 				            className={classes.textField}
 				            margin="dense"
 				            id="standard-read-only-input"
-				            value="W"
+				            value={this.state.country}
 				            InputProps={{
 					          readOnly: true,
 					        }}
