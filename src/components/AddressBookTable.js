@@ -1,10 +1,9 @@
 import React from 'react';
-
 import axios from 'axios';
 import {withStyles} from '@material-ui/core/styles'
+
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -16,6 +15,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
+import { flexbox } from '@material-ui/system';
+
 
 const styles = {
 	root: {
@@ -27,21 +28,14 @@ const styles = {
 		['@media (max-width:450px)']: {
          height: '70vh',
        },
-	},
-	paper: {
-		overflowX: 'auto',
+       overflowX: 'auto',
 		overflowY: 'auto',
-		width: '100%',
-		height: '75vh',
-		marginTop: '20px',	
-		['@media (max-width:450px)']: {
-         height: '55vh',
-       },
 	},
 	card: {
-	    width: '250px',
+  		width: '8em',
 	    margin: '10px',
-	    
+	    border: 'solid 1px lightgrey',
+	    flexGrow: '1',
 	},
 	  wrapper: {
 	  	display: 'flex',
@@ -50,7 +44,7 @@ const styles = {
 	    alignItems: 'flex-start',
 	    justifyContent: 'flex-start',
 	    ['@media (max-width:450px)']: {
-         height: '70vh',
+         height: 'auto',
        },
 	},
 	textField: {
@@ -61,10 +55,7 @@ const styles = {
 	}
 }
 
-
 class AdressBookTable extends React.Component{
-
-
 	constructor(){
 		super();
 
@@ -79,12 +70,8 @@ class AdressBookTable extends React.Component{
 	        editButton: 'flex',
 	        saveButton: 'none',
 	        currentId: 0,
-
-
 		}
-
 		this.formSubmitUpdate = this.formSubmitUpdate.bind(this);
-
 	}
 
 
@@ -99,7 +86,6 @@ class AdressBookTable extends React.Component{
 	        axios.get(`http://localhost:3001/addressbook/` +uId)
 	        
 	        .then(result => {
-	        	
 	        	this.setState({
 	        		contacts: result.data
 	        	})
@@ -174,8 +160,6 @@ class AdressBookTable extends React.Component{
             })
 	}
 
-
-
   render() {
 
   	const {classes} = this.props
@@ -185,7 +169,6 @@ class AdressBookTable extends React.Component{
     	<Container maxWidth="xl" className={classes.root} >
     	<Grid container className={classes.wrapper}>
     	{
-
     		this.state.contacts.map( item => (
     				
 	    			<Card key={item.contactid} className={classes.card}>
@@ -195,10 +178,10 @@ class AdressBookTable extends React.Component{
 						  container
 						  direction="row"
 						  justify="flex-start"
-						  alignItems="center"
+						  alignItems="flex-start"
 						>	
 							<ContactPhone style={{fontSize: '1.5em', color: '#3f51b5'}} /> &nbsp;
-				          <Typography style={{fontSize: '.7em', }} gutterBottom variant="h5" component="h2">
+				          <Typography style={{fontSize: '.8em',  wordWrap: 'break-word',}} gutterBottom variant="h5" component="h2">
 				            {item.last_name}, {item.first_name}   
 				          	</Typography>
 				          	</Grid>
@@ -207,13 +190,13 @@ class AdressBookTable extends React.Component{
 				          </Typography>
 				        </CardContent>
 					    <CardActions >
-					        <Button size="small" color="primary" 
+					        <Button style={{fontSize: '.5em'}}  size="small" color="primary" 
 					        	onClick={() => this.handleOpenDialog(item.id)}
 					         >
 					          More
 					       	</Button>
 					        
-					        <Button size="small" color="primary"
+					        <Button style={{fontSize: '.5em'}}  size="small" color="primary"
 					        	onClick={() => this.handleDelete(item.id)}
 					        >
 					          Remove
@@ -229,7 +212,6 @@ class AdressBookTable extends React.Component{
 			        <DialogTitle id="form-dialog-title">View</DialogTitle>
 			        <DialogContent >
 
-			        
 			          <Grid
 						  container 
 						  direction="row"
@@ -394,13 +376,11 @@ class AdressBookTable extends React.Component{
 				        	})}
 				          />
 
-
 				      </Grid>
-				    
 
 			        </DialogContent>
 			        <DialogActions>
-			          <Button style={ { display: `${ this.state.editButton }` } } onClick={() => this.setState({
+			          <Button style={{ display: `${ this.state.editButton }` }} onClick={() => this.setState({
 	                 		disabled: false, saveDisabled: false, editButton: 'none', saveButton: 'flex',
 	                 })} color="primary">
 			           	Edit
@@ -419,7 +399,6 @@ class AdressBookTable extends React.Component{
 			    </Dialog>
 			    </form>
 	    </Container>
-
 
     )
 

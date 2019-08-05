@@ -47,6 +47,9 @@ const styles = {
 	}
 }
 
+
+
+
 class AddressBook extends React.Component<Props, State>{
 
 
@@ -81,7 +84,6 @@ class AddressBook extends React.Component<Props, State>{
 		else{
 			this.props.history.push('/signin')
 		}
-		
 	}
 
 	logout(e){
@@ -198,10 +200,10 @@ class AddressBook extends React.Component<Props, State>{
 				          	className={classes.textField}
 				            autoFocus
 				            margin="dense"
-				            id="name"
 				            label="First Name"
 				            type="text"
 				            required
+				            id="standard-required"
 				            onChange={(e) => this.setState({
 				        	fName: e.target.value
 				        })}
@@ -346,7 +348,7 @@ class AddressBook extends React.Component<Props, State>{
 
 			        </DialogContent>
 			        <DialogActions>
-			        
+
 			          <Button type='submit' color="primary">
 			            Add
 			          </Button>
