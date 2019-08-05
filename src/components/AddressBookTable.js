@@ -72,13 +72,29 @@ class AdressBookTable extends React.Component{
 
 			contacts: [],
 			open: false,
-			fName: '', lName: '', homePhone: '', mobilePhone: '', workPhone: '', email: '', city: '', stateOrProvince: '', postalCode: '', country: '',
+			fName: '', lName: '', homePhone: '', mobilePhone: '', workPhone: '', email: '', city: '', stateOrProvince: '', postalCode: '', country: '', userId: '',
+			disabled: true, 
+	        buttonChange: 'Edit',
+	        saveDisabled: true,
+	        editButton: 'flex',
+	        saveButton: 'none',
+	        currentId: 0,
+
+
 		}
+
+		this.formSubmitUpdate = this.formSubmitUpdate.bind(this);
+
 	}
 
 
 	componentDidMount(){
-			const uId = localStorage.getItem('id');
+
+			this.getData();
+	}
+
+	getData = () => {
+		const uId = localStorage.getItem('id');
 
 	        axios.get(`http://localhost:3001/addressbook/` +uId)
 	        
@@ -96,7 +112,7 @@ class AdressBookTable extends React.Component{
 		.then(result => {
 	        	
 	        	this.setState({
-
+	        		currentId: id,
 	        		fName: result.data.first_name, 
 	        		lName: result.data.last_name, 
 	        		homePhone: result.data.home_phone, 
@@ -106,8 +122,7 @@ class AdressBookTable extends React.Component{
 	        		city: result.data.city, 
 	        		stateOrProvince: result.data.state_or_province, 
 	        		postalCode: result.data.postal_code, 
-	        		country: result.data.country 
-
+	        		country: result.data.country,
 	        		})
 
 	        	})
@@ -116,26 +131,55 @@ class AdressBookTable extends React.Component{
 		})
 	}
 
+	formSubmitUpdate(e) {
+
+		console.log('edit')
+		const contactId = this.state.currentId
+		console.log(this.state.fName)
+		axios.patch(`http://localhost:3001/addressbook/update/` +contactId, {
+
+	        		first_name: this.state.fName, 
+	        		last_name: this.state.lName,
+	        		home_phone: this.state.homePhone,
+	        		mobile_phone: this.state.mobilePhone, 
+	        		work_phone: this.state.workPhone,
+	        		email: this.state.email,
+	        		city: this.state.city,
+	        		state_or_province: this.state.stateOrProvince,
+	        		postal_code: this.state.postalCode,
+	        		country: this.state.country,
+
+	        	})
+				.then(res => {
+
+					console.log(res.data)
+					this.getData();
+				});
+
+			this.setState({
+
+				saveDisabled: true, 
+				editButton: 'flex', 
+				saveButton: 'none', 
+				disabled: true,
+			})
+	}
+
 	handleDelete = (id) => {
         axios
             .delete(`http://localhost:3001/addressbook/delete/` +id)
             .then(res => {
                 console.log(res)
-            })
-            .catch(err => {
-                console.error(err)
-                if(err.response.status === 401){
-                    this.props.history.push('/')
-                }
+                this.getData();
             })
 	}
+
 
 
   render() {
 
   	const {classes} = this.props
-
-  	 
+  	
     return (
 
     	<Container maxWidth="xl" className={classes.root} >
@@ -155,69 +199,66 @@ class AdressBookTable extends React.Component{
 						>	
 							<ContactPhone style={{fontSize: '1.5em', color: '#3f51b5'}} /> &nbsp;
 				          <Typography style={{fontSize: '.7em', }} gutterBottom variant="h5" component="h2">
-				            {item.first_name}   {item.last_name}
-				          </Typography>
-				          </Grid>
-				          <Typography variant="body2" color="textSecondary">
+				            {item.last_name}, {item.first_name}   
+				          	</Typography>
+				          	</Grid>
+				          	<Typography variant="body2" color="textSecondary">
 				            {item.mobile_phone}
 				          </Typography>
 				        </CardContent>
-					      <CardActions >
+					    <CardActions >
 					        <Button size="small" color="primary" 
 					        	onClick={() => this.handleOpenDialog(item.id)}
 					         >
 					          More
-					        </Button>
-					        <Button size="small" color="primary">
-					          Edit
-					        </Button>
+					       	</Button>
+					        
 					        <Button size="small" color="primary"
 					        	onClick={() => this.handleDelete(item.id)}
 					        >
 					          Remove
 					        </Button>
-					      </CardActions>
+					    </CardActions>
 				    </Card>
 				  
     			))
-    		
-
 		}    		
 	    </Grid> 
+	    	<form>
 	    		<Dialog fullWidth maxWidth="sm" open={this.state.open}   aria-labelledby="form-dialog-title">
 			        <DialogTitle id="form-dialog-title">View</DialogTitle>
 			        <DialogContent >
 
-
+			        
 			          <Grid
 						  container 
 						  direction="row"
 						  justify="space-around"
 						  alignItems="center"
 						>
-
+						
 				          <TextField
 				          	className={classes.textField}
 				            margin="dense"
-				            id="standard-read-only-input"
 				            value={this.state.fName}
 				            label="First Name"
 				            type="text"
-				            InputProps={{
-					          readOnly: true,
-					        }}
+				            disabled={this.state.disabled}
+				            onChange={(e) => this.setState({
+				        		fName: e.target.value
+				        	})}
 				          />
 
 				          <TextField
 				          	className={classes.textField}
 				            margin="dense"
-				            id="standard-read-only-input"
 				            value={this.state.lName}
 				            label="Last Name"
 				            type="text"
-				            InputProps={{
-					          readOnly: true,
-					        }}
+				            disabled={this.state.disabled}
+				            onChange={(e) => this.setState({
+				        		lName: e.target.value
+				        	})}
 				          />
 
 
@@ -235,23 +276,23 @@ class AdressBookTable extends React.Component{
 				            margin="dense"
 				            label="Mobile Phone Number"
 				            type="number"
-				            id="standard-read-only-input"
 				            value={this.state.mobilePhone}
-				            InputProps={{
-					          readOnly: true,
-					        }}
+				            disabled={this.state.disabled}
+				            onChange={(e) => this.setState({
+				        		mobilePhone: e.target.value
+				        	})}
 				          />
 
 				          <TextField
 				            className={classes.textField}
 				            margin="dense"
-				            id="standard-read-only-input"
 				            value={this.state.workPhone}
-				            InputProps={{
-					          readOnly: true,
-					        }}
 				            label="Work Phone Number"
 				            type="number"
+				            disabled={this.state.disabled}
+				            onChange={(e) => this.setState({
+				        		workPhone: e.target.value
+				        	})}
 				          />
 
 				      </Grid>
@@ -266,25 +307,25 @@ class AdressBookTable extends React.Component{
 				          <TextField
 				            className={classes.textField}
 				            margin="dense"
-				            id="standard-read-only-input"
 				            value={this.state.homePhone}
-				            InputProps={{
-					          readOnly: true,
-					        }}
 				            label="Home Phone Number"
 				            type="number"
+				            disabled={this.state.disabled}
+				            onChange={(e) => this.setState({
+				        		homePhone: e.target.value
+				        	})}
 				          />
 
 				          <TextField
 				            className={classes.textField}
 				            margin="dense"
-				            id="standard-read-only-input"
 				            value={this.state.email}
-				            InputProps={{
-					          readOnly: true,
-					        }}
 				            label="Email"
 				            type="email"
+				            disabled={this.state.disabled}
+				            onChange={(e) => this.setState({
+				        		email: e.target.value
+				        	})}
 				          />
 
 				      </Grid>
@@ -299,25 +340,25 @@ class AdressBookTable extends React.Component{
 				           <TextField
 				            className={classes.textField}
 				            margin="dense"
-				            id="standard-read-only-input"
 				            value={this.state.city}
-				            InputProps={{
-					          readOnly: true,
-					        }}
 				            label="City"
 				            type="text"
+				            disabled={this.state.disabled}
+				            onChange={(e) => this.setState({
+				        		city: e.target.value
+				        	})}
 				          />
 
 				          <TextField
 				            className={classes.textField}
 				            margin="dense"
-				            id="standard-read-only-input"
 				            value={this.state.stateOrProvince}
-				            InputProps={{
-					          readOnly: true,
-					        }}
 				            label="State/Province"
 				            type="text"
+				            disabled={this.state.disabled}
+				            onChange={(e) => this.setState({
+				        		stateOrProvince: e.target.value
+				        	})}
 				          />
 				          
 				      </Grid>
@@ -332,31 +373,43 @@ class AdressBookTable extends React.Component{
 				          <TextField
 				            className={classes.textField}
 				            margin="dense"
-				            id="standard-read-only-input"
 				            value={this.state.postalCode}
-				            InputProps={{
-					          readOnly: true,
-					        }}
 				            label="Postal Code"
 				            type="number"
+				            disabled={this.state.disabled}
+				            onChange={(e) => this.setState({
+				        		postalCode: e.target.value
+				        	})}
 				          />
 
 				          <TextField
 				            className={classes.textField}
 				            margin="dense"
-				            id="standard-read-only-input"
 				            value={this.state.country}
-				            InputProps={{
-					          readOnly: true,
-					        }}
 				            label="Country"
 				            type="text"
+				            disabled={this.state.disabled}
+				            onChange={(e) => this.setState({
+				        		country: e.target.value
+				        	})}
 				          />
 
+
 				      </Grid>
+				    
 
 			        </DialogContent>
 			        <DialogActions>
+			          <Button style={ { display: `${ this.state.editButton }` } } onClick={() => this.setState({
+	                 		disabled: false, saveDisabled: false, editButton: 'none', saveButton: 'flex',
+	                 })} color="primary">
+			           	Edit
+			          </Button>
+			          <Button type='submit' style={ { display: `${ this.state.saveButton }` } } disabled={this.state.saveDisabled} color="primary"
+			          onClick={this.formSubmitUpdate}
+			          >
+			           	Save
+			          </Button>
 			          <Button onClick={() => this.setState({
 	                 		open: false,
 	                 })} color="primary">
@@ -364,6 +417,7 @@ class AdressBookTable extends React.Component{
 			          </Button>
 			        </DialogActions>
 			    </Dialog>
+			    </form>
 	    </Container>
 
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
 
-
 import AddressBookTable from './AddressBookTable.js';
 import FilterTool from './FilterTool.js';
 import Grid from '@material-ui/core/Grid';
@@ -22,7 +21,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
-
 
 const styles = {
 	root: {
@@ -46,19 +44,14 @@ const styles = {
 		['@media (max-width:552px)']: {
          width: '100%',
        },
-
 	}
-
 }
-
 
 class AddressBook extends React.Component<Props, State>{
 
 
 	constructor(){
 		super();
-
-		
 
 		this.state = {
 
@@ -76,8 +69,6 @@ class AddressBook extends React.Component<Props, State>{
 
 		}
 	}
-
-
 
 	componentDidMount(){
 		const token = localStorage.getItem('token')
@@ -97,9 +88,7 @@ class AddressBook extends React.Component<Props, State>{
 
 		this.props.history.push('/signin')
     	localStorage.clear()
-
 	}
-
 
 	formCreateContact(e){
 		e.preventDefault();
@@ -141,14 +130,8 @@ class AddressBook extends React.Component<Props, State>{
 
   	const {classes} = this.props
   		
-
     return (
-
-    	
     	<React.Fragment>
-
-    	
-
     	<Container maxWidth='xl' className={classes.outer} >
     		
     		<FilterTool />
@@ -164,7 +147,6 @@ class AddressBook extends React.Component<Props, State>{
 					  direction="row"
 					  justify="space-between"
 					  alignItems="center"
-					  
 					>
 	              	<Box >
 	              	<Grid
@@ -184,7 +166,6 @@ class AddressBook extends React.Component<Props, State>{
 	                <Box>
 	                <Tooltip title="Add New Contact">
 	                 <Add className={classes.addIcon} onClick={() => this.setState({
-
 	                 		open: true,
 	                 })}/>
 	                 </Tooltip>
@@ -195,11 +176,8 @@ class AddressBook extends React.Component<Props, State>{
 	                </Grid>
 	              </Toolbar>
 
-	         
 	           </AppBar>
 
-
-	           
 	           <AddressBookTable />
 
 	            <Dialog fullWidth maxWidth="sm" open={this.state.open}   aria-labelledby="form-dialog-title">
@@ -208,7 +186,6 @@ class AddressBook extends React.Component<Props, State>{
 			        <form noValidate autoComplete="off"  
              		 	onSubmit={(e) => this.formCreateContact(e)} >
 			        <DialogContent >
-
 
 			          <Grid
 						  container 
@@ -240,7 +217,6 @@ class AddressBook extends React.Component<Props, State>{
 				        	lName: e.target.value
 				        })}
 				          />
-
 
 				      </Grid>
 
@@ -370,6 +346,7 @@ class AddressBook extends React.Component<Props, State>{
 
 			        </DialogContent>
 			        <DialogActions>
+			        
 			          <Button type='submit' color="primary">
 			            Add
 			          </Button>
@@ -382,13 +359,11 @@ class AddressBook extends React.Component<Props, State>{
 			        </DialogActions>
 			        </form>
 			    </Dialog>
-			    
-	    </Container>
 
+	    </Container>
 
 		</React.Fragment>
     )
-
   }
 }
 

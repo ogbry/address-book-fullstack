@@ -72,14 +72,44 @@ function getById(req, res) {
 function deleteById(req, res) {
   const db = req.app.get('db');
 
-  console.log(req.params.id)
-
-  db.contacts
-    destroy({id: req.params.id})
+  db.address_book
+    .destroy({id: req.params.id})
     .then(cont => res.status(200).json(cont))
     .catch(err => {
      res.status(500).end()
    })
+}
+
+function updateContact(req, res) {
+  const db = req.app.get('db')
+  const {
+      first_name,
+      last_name,
+      home_phone,
+      mobile_phone,
+      work_phone,
+      email,
+      city,
+      state_or_province,
+      postal_code,
+      country
+
+  } = req.body
+
+    db.contacts
+    .update(req.params.id, {
+      first_name: first_name,
+      last_name: last_name,
+      home_phone: home_phone,
+      mobile_phone: mobile_phone,
+      work_phone: work_phone,
+      email: email,
+      city: city,
+      state_or_province: state_or_province,
+      postal_code: postal_code,
+      country: country
+    })
+    .then(item => res.status(200).json(item))
 }
 
 module.exports = {
@@ -87,9 +117,5 @@ module.exports = {
   contactList,
   getById,
   deleteById,
+  updateContact,
 };
-
-
-
-
-
