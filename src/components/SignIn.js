@@ -21,7 +21,8 @@ const styles = {
 		marginTop: '50px',
 		backgroundColor: '#f0f0f0',
 		['@media (max-width:450px)']: {
-         width: '100%',
+         width: '95%',
+         marginTop: '50px',
        },
 	},
 	marginBottom: {
@@ -178,7 +179,7 @@ class SignIn extends React.Component<Props, State>{
 				  justify="center"
 				  alignItems="center"
 				>	
-					<AccountCircle className={classes.marginBottom} style={{color: 'grey', fontSize: '60px'}} />
+					<AccountCircle className={classes.marginBottom} style={{color: '#3f51b5', fontSize: '60px'}} />
 				    
 					<form noValidate autoComplete="off"  
              		 onSubmit={(e) => this.formSubmission(e)}

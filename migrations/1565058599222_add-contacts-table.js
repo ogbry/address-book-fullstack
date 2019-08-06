@@ -14,13 +14,13 @@ exports.up = pgm => {
             type: 'text',
         },
         home_phone: {
-            type: 'integer',
+            type: 'text',
         },
         mobile_phone: {
-            type: 'integer',
+            type: 'text',
         },
         work_phone: {
-            type: 'integer',
+            type: 'text',
         },
         email: {
             type: 'text',
@@ -32,7 +32,7 @@ exports.up = pgm => {
             type: 'text',
         },
         postal_code: {
-            type: 'integer',
+            type: 'text',
         },
         country: {
             type: 'text',

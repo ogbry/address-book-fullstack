@@ -11,9 +11,7 @@ import Button from '@material-ui/core/Button';
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import CircularProgress from '@material-ui/core/CircularProgress';
-
-
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 const styles = {
 	inputBox: {
@@ -23,7 +21,8 @@ const styles = {
 		marginTop: '50px',
 		backgroundColor: '#f0f0f0',
 		['@media (max-width:450px)']: {
-         width: '100%',
+         width: '95%',
+         marginTop: '50px',
        },
 	},
 	marginBottom: {
@@ -53,24 +52,10 @@ class SignUp extends React.Component{
 			email: '',
 			username: '',
 			password: '',
-			errorHelperText: ' ',
+			successMessege: 'none',
 		}
 	}
 
-	handleFields = (event) => {
-
-		  if(event.target.value.length <= 0){
-		    this.setState({
-		      errorHelperText: 'This field is required',
-		    })
-		  }
-		  else{
-		  	this.setState({
-		  		errorHelperText: ' ',
-		  	})
-		  }
-		  
-		}
 
 	formSignUp(e){
 		e.preventDefault();
@@ -83,8 +68,23 @@ class SignUp extends React.Component{
 			username: this.state.username,
 			password: this.state.password
 
-		}).then(res => console.log(res.data));
+		}).then(res => {
 
+			if(res.data === null){
+				console.log('error')
+			}
+			else{
+				this.setState({
+					successMessege: 'flex',
+					fName: '',
+					lName: '',
+					email: '',
+					username: '',
+					password: '',
+				})
+			}
+
+		})
 	}
 
   render() {
@@ -119,17 +119,17 @@ class SignUp extends React.Component{
 				  justify="center"
 				  alignItems="center"
 				>	
-					<AccountCircle className={classes.marginBottom} style={{color: 'grey', fontSize: '60px',}} />
+					<AccountCircle className={classes.marginBottom} style={{color: '#f50057', fontSize: '60px',}} />
 					
 				    <form 
              		 onSubmit={(e) => this.formSignUp(e)} >
              		 
 
 				    <TextField className={classes.textField}
-				        onBlur={(event) => this.handleFields(event)}
 				        fullWidth
 				        required
 				        margin="normal"
+				        value={this.state.fName}
 				        id="standard-required"
 				        label="First Name"
 				        variant="outlined"
@@ -142,6 +142,7 @@ class SignUp extends React.Component{
 				        label="Last Name"
 				        fullWidth
 				        required
+				        value={this.state.lName}
 				        margin="normal"
 				        id="standard-required"
 				        variant="outlined"
@@ -151,10 +152,10 @@ class SignUp extends React.Component{
 				      />
 
 					<TextField className={classes.textField}
-				        onBlur={(event) => this.handleFields(event)}
 				        label="Email"
 				        fullWidth
 				        required
+				        value={this.state.email}
 				        margin="normal"
 				        id="standard-required"
 				        variant="outlined"
@@ -167,6 +168,7 @@ class SignUp extends React.Component{
 				        label="Username"
 				        fullWidth
 				        required
+				        value={this.state.username}
 				        id="standard-required"
 				        variant="outlined"
 				        margin="normal"
@@ -175,12 +177,12 @@ class SignUp extends React.Component{
 				        })}
 				      />
 				    
-				      <TextField style={{marginBottom: '10px'}}
+				      <TextField style={{marginBottom: '20px'}}
 				        label="Password"
-				        helperText={this.state.errorHelperText}
 				        type="password"
 				        fullWidth
 				        required
+				        value={this.state.password}
 				        margin="normal"
 				        id="standard-required"
 				        variant="outlined"
@@ -193,6 +195,9 @@ class SignUp extends React.Component{
 				      <Button variant="contained" type='submit' color="secondary" fullWidth className={classes.button}>
 				        Sign Up
 				      </Button>
+
+				      <FormHelperText id="component-error-text" style={{color: 'red', marginTop: '10px', display: `${ this.state.successMessege }`}}>Account Created, Login? Click SIGN IN</FormHelperText>
+
 				      <Grid
 						  container
 						  justify="center"

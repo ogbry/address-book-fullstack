@@ -18,7 +18,7 @@ const styles = {
 }
 
 
-class FilterTool extends React.Component{
+class FilterTool extends React.Component<Props, State>{
 
 
 	constructor(){
@@ -26,18 +26,20 @@ class FilterTool extends React.Component{
 
 		this.state = {
 
-
 		}
 	}
+
   render() {
 
   	const {classes} = this.props
+
+  	console.log(this.props)
+  	console.log(this.props.searchVal)
 
     return (
     	
     	<React.Fragment>
 
-    	
     		<Grid
 			  container
 			  spacing={2}
@@ -46,26 +48,29 @@ class FilterTool extends React.Component{
 			  alignItems="center"
 			  style={{marginTop: '80px',}}
 			>
-				 <Grid item lg={2} xs={12} >
+				 <Grid item lg={2} md={3} sm={3} xs={6} >
 			          <FormControl style={{width: '100%'}}>
-			        <InputLabel htmlFor="age-simple">Sort By Last Name</InputLabel>
+			        <InputLabel htmlFor="age-simple">By Last Name</InputLabel>
 			        <Select
-			          value="Sort"
+			          value={this.props.query}
+			          onChange={(e) => this.props.selectFilter(e.target.value)}>
 			        >
-			          <MenuItem value={10}>Ten</MenuItem>
-			          <MenuItem value={20}>Twenty</MenuItem>
+			          <MenuItem value='ASC'>A-Z</MenuItem>
+			          <MenuItem value='DESC'>Z-A</MenuItem>
 			        </Select>
 			      </FormControl>
 			        </Grid>
 
-			        <Grid item lg={2} xs={12} >
+			        <Grid item lg={2} md={3} sm={3} xs={6} >
 			           <TextField
 			           style={{width: '100%',}}
 						className={classes.textField}
 					  	margin="dense"
 						id="name"
-					    label="Search by Name"
+						value={this.props.searchVal}
+					    label="By Name"
 					   	type="text"
+					   	onChange={(event) => this.props.handleSearch(event)}
 					/>
 			        </Grid>
 

@@ -15,7 +15,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
-import { flexbox } from '@material-ui/system';
 
 
 const styles = {
@@ -32,10 +31,13 @@ const styles = {
 		overflowY: 'auto',
 	},
 	card: {
-  		width: '8em',
+  		width: '273px',
 	    margin: '10px',
 	    border: 'solid 1px lightgrey',
-	    flexGrow: '1',
+	    ['@media (max-width:680px)']: {
+         flexGrow: 1,
+       },
+
 	},
 	  wrapper: {
 	  	display: 'flex',
@@ -43,7 +45,7 @@ const styles = {
 	    flexDirection: 'row',
 	    alignItems: 'flex-start',
 	    justifyContent: 'flex-start',
-	    ['@media (max-width:450px)']: {
+	    ['@media (min-width:450px)']: {
          height: 'auto',
        },
 	},
@@ -61,9 +63,8 @@ class AdressBookTable extends React.Component{
 
 		this.state = {
 
-			contacts: [],
 			open: false,
-			fName: '', lName: '', homePhone: '', mobilePhone: '', workPhone: '', email: '', city: '', stateOrProvince: '', postalCode: '', country: '', userId: '',
+			fName: '', lName: '', homePhone: '', mobilePhone: ' ', workPhone: '', email: '', city: '', province: '', postalCode: '', country: '', userId: '',
 			disabled: true, 
 	        buttonChange: 'Edit',
 	        saveDisabled: true,
@@ -74,23 +75,6 @@ class AdressBookTable extends React.Component{
 		this.formSubmitUpdate = this.formSubmitUpdate.bind(this);
 	}
 
-
-	componentDidMount(){
-
-			this.getData();
-	}
-
-	getData = () => {
-		const uId = localStorage.getItem('id');
-
-	        axios.get(`http://localhost:3001/addressbook/` +uId)
-	        
-	        .then(result => {
-	        	this.setState({
-	        		contacts: result.data
-	        	})
-	    })
-	}
 
 	handleOpenDialog = (id) => {
 
@@ -106,7 +90,7 @@ class AdressBookTable extends React.Component{
 	        		workPhone: result.data.work_phone, 
 	        		email: result.data.email, 
 	        		city: result.data.city, 
-	        		stateOrProvince: result.data.state_or_province, 
+	        		province: result.data.state_or_province, 
 	        		postalCode: result.data.postal_code, 
 	        		country: result.data.country,
 	        		})
@@ -131,7 +115,7 @@ class AdressBookTable extends React.Component{
 	        		work_phone: this.state.workPhone,
 	        		email: this.state.email,
 	        		city: this.state.city,
-	        		state_or_province: this.state.stateOrProvince,
+	        		state_or_province: this.state.province,
 	        		postal_code: this.state.postalCode,
 	        		country: this.state.country,
 
@@ -139,7 +123,7 @@ class AdressBookTable extends React.Component{
 				.then(res => {
 
 					console.log(res.data)
-					this.getData();
+					this.props.getData();
 				});
 
 			this.setState({
@@ -155,8 +139,7 @@ class AdressBookTable extends React.Component{
         axios
             .delete(`http://localhost:3001/addressbook/delete/` +id)
             .then(res => {
-                console.log(res)
-                this.getData();
+                this.props.getData();
             })
 	}
 
@@ -169,7 +152,7 @@ class AdressBookTable extends React.Component{
     	<Container maxWidth="xl" className={classes.root} >
     	<Grid container className={classes.wrapper}>
     	{
-    		this.state.contacts.map( item => (
+    		this.props.contacts.map( item => (
     				
 	    			<Card key={item.contactid} className={classes.card}>
 	    			
@@ -182,7 +165,7 @@ class AdressBookTable extends React.Component{
 						>	
 							<ContactPhone style={{fontSize: '1.5em', color: '#3f51b5'}} /> &nbsp;
 				          <Typography style={{fontSize: '.8em',  wordWrap: 'break-word',}} gutterBottom variant="h5" component="h2">
-				            {item.last_name}, {item.first_name}   
+				           		{item.first_name} {item.last_name}  
 				          	</Typography>
 				          	</Grid>
 				          	<Typography variant="body2" color="textSecondary">
@@ -197,7 +180,7 @@ class AdressBookTable extends React.Component{
 					       	</Button>
 					        
 					        <Button style={{fontSize: '.5em'}}  size="small" color="primary"
-					        	onClick={() => this.handleDelete(item.id)}
+					        	onClick={() => this.handleDelete(item.id, this.state.currentId)}
 					        >
 					          Remove
 					        </Button>
@@ -209,7 +192,7 @@ class AdressBookTable extends React.Component{
 	    </Grid> 
 	    	<form>
 	    		<Dialog fullWidth maxWidth="sm" open={this.state.open}   aria-labelledby="form-dialog-title">
-			        <DialogTitle id="form-dialog-title">View</DialogTitle>
+			        <DialogTitle id="form-dialog-title">View Contact</DialogTitle>
 			        <DialogContent >
 
 			          <Grid
@@ -257,7 +240,7 @@ class AdressBookTable extends React.Component{
 				          	className={classes.textField}
 				            margin="dense"
 				            label="Mobile Phone Number"
-				            type="number"
+				            type="text"
 				            value={this.state.mobilePhone}
 				            disabled={this.state.disabled}
 				            onChange={(e) => this.setState({
@@ -270,7 +253,7 @@ class AdressBookTable extends React.Component{
 				            margin="dense"
 				            value={this.state.workPhone}
 				            label="Work Phone Number"
-				            type="number"
+				            type="text"
 				            disabled={this.state.disabled}
 				            onChange={(e) => this.setState({
 				        		workPhone: e.target.value
@@ -291,7 +274,7 @@ class AdressBookTable extends React.Component{
 				            margin="dense"
 				            value={this.state.homePhone}
 				            label="Home Phone Number"
-				            type="number"
+				            type="text"
 				            disabled={this.state.disabled}
 				            onChange={(e) => this.setState({
 				        		homePhone: e.target.value
@@ -334,12 +317,12 @@ class AdressBookTable extends React.Component{
 				          <TextField
 				            className={classes.textField}
 				            margin="dense"
-				            value={this.state.stateOrProvince}
-				            label="State/Province"
+				            value={this.state.province}
+				            label="State or Province"
 				            type="text"
 				            disabled={this.state.disabled}
 				            onChange={(e) => this.setState({
-				        		stateOrProvince: e.target.value
+				        		province: e.target.value
 				        	})}
 				          />
 				          
@@ -357,7 +340,7 @@ class AdressBookTable extends React.Component{
 				            margin="dense"
 				            value={this.state.postalCode}
 				            label="Postal Code"
-				            type="number"
+				            type="text"
 				            disabled={this.state.disabled}
 				            onChange={(e) => this.setState({
 				        		postalCode: e.target.value

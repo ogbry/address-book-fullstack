@@ -21,6 +21,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
+import FormHelperText from '@material-ui/core/FormHelperText';
+
 
 const styles = {
 	root: {
@@ -66,15 +68,42 @@ class AddressBook extends React.Component<Props, State>{
 			home_phone: '',
 			email: '',
 			city: '',
-			state: '',
+			state_or_province: '',
 			postal_code: '',
 			country: '',
-
+			firstNameError: false,
+			errorMessege: ' ',
+			formHelper: 'none',
+			contacts: [],
+			query: 'ASC',
+			searchVal: '',
 		}
 	}
 
+
+
 	componentDidMount(){
+		this.getData();
+		this.reloadData();
+	}
+
+
+	getData = () => {
+		const uId = localStorage.getItem('id');
+
+	        axios.get(`http://localhost:3001/addressbook/${uId}?sort=${this.state.query}`)
+	        
+	        .then(result => {
+	        	this.setState({
+	        		contacts: result.data
+	        	})
+	    })
+	}
+
+
+	reloadData = () => {
 		const token = localStorage.getItem('token')
+
 		const getId = localStorage.getItem('id')
 
 
@@ -86,6 +115,28 @@ class AddressBook extends React.Component<Props, State>{
 		}
 	}
 
+	selectFilter = (e) =>{
+		this.setState({
+			query: e,
+		} , () => {
+			this.getData();
+		})
+	}
+
+	search = (e) => {
+	    this.setState({
+	      searchVal: '',
+	    })
+	}
+
+	handleSearch = (event) => {
+	    console.log(event.target.value)
+	    this.setState({
+	      searchVal: event.target.value
+	    })
+	}
+
+
 	logout(e){
 
 		this.props.history.push('/signin')
@@ -96,47 +147,50 @@ class AddressBook extends React.Component<Props, State>{
 		e.preventDefault();
 
 		const id = localStorage.getItem('id')
-		
-		console.log(this.state.fName,this.state.lName,
-				this.state.home_phone,
-				this.state.mobile_phone,
-				this.state.work_phone,
-				this.state.email,
-				this.state.city,
-				this.state.state_or_province,
-				this.state.postal_code,
-				this.state.country,)
 
-		axios.post('http://localhost:3001/createcontact' , {
+		if(this.state.fName <= 0){
 
-			id: id,
-			first_name: this.state.fName,
-			last_name: this.state.lName,
-			home_phone: this.state.home_phone,
-			mobile_phone: this.state.mobile_phone,
-			work_phone: this.state.work_phone,
-			email: this.state.email,
-			city: this.state.city,
-			state_or_province: this.state.state_or_province,
-			postal_code: this.state.postal_code,
-			country: this.state.country,
+			 this.setState({
+			 	firstNameError: true,
+			 	errorMessege: 'First Name is required',
+			 	formHelper: 'flex',
+			 })
+		}
 
-		}).then(res => console.log(res.data))
-		.catch(err => {
-	      console.error(err);
-	    });  
+		else{
+			axios.post('http://localhost:3001/createcontact' , {
 
+				id: id,
+				first_name: this.state.fName,
+				last_name: this.state.lName,
+				home_phone: this.state.home_phone,
+				mobile_phone: this.state.mobile_phone,
+				work_phone: this.state.work_phone,
+				email: this.state.email,
+				city: this.state.city,
+				state_or_province: this.state.state_or_province,
+				postal_code: this.state.postal_code,
+				country: this.state.country,
+
+			}).then(res => {
+				this.getData();
+			})
+			.catch(err => {
+		      console.error(err);
+		    }); 
+		}
 	}	
 
   render() {
 
   	const {classes} = this.props
-  		
+  	
+
     return (
     	<React.Fragment>
     	<Container maxWidth='xl' className={classes.outer} >
     		
-    		<FilterTool />
+    		<FilterTool selectFilter={this.selectFilter} query={this.state.query} search={this.search} handleSearch={this.handleSearch} searchVal={this.state.searchVal}/>
 	          
 	    </Container>
 
@@ -180,7 +234,7 @@ class AddressBook extends React.Component<Props, State>{
 
 	           </AppBar>
 
-	           <AddressBookTable />
+	           <AddressBookTable getData={this.getData} contacts={this.state.contacts}/>
 
 	            <Dialog fullWidth maxWidth="sm" open={this.state.open}   aria-labelledby="form-dialog-title">
 			        <DialogTitle id="form-dialog-title">New Contact</DialogTitle>
@@ -195,19 +249,18 @@ class AddressBook extends React.Component<Props, State>{
 						  justify="space-around"
 						  alignItems="center"
 						>
+						  
 
-				          <TextField
-				          	className={classes.textField}
-				            autoFocus
-				            margin="dense"
-				            label="First Name"
-				            type="text"
-				            required
-				            id="standard-required"
-				            onChange={(e) => this.setState({
+				           <TextField 
+				            className={classes.textField}
+					        required
+				        	id="standard-required"
+					        error={this.state.firstNameError}
+					        label="First Name"
+					        onChange={(e) => this.setState({
 				        	fName: e.target.value
 				        })}
-				          />
+					      />
 
 				          <TextField
 				          	className={classes.textField}
@@ -234,7 +287,7 @@ class AddressBook extends React.Component<Props, State>{
 				            margin="dense"
 				            id="name"
 				            label="Mobile Phone Number"
-				            type="number"
+				            type="text"
 				            onChange={(e) => this.setState({
 				        	mobile_phone: e.target.value
 				        })}
@@ -245,7 +298,7 @@ class AddressBook extends React.Component<Props, State>{
 				            margin="dense"
 				            id="name"
 				            label="Work Phone Number"
-				            type="number"
+				            type="text"
 				            onChange={(e) => this.setState({
 				        	work_phone: e.target.value
 				        })}
@@ -265,7 +318,7 @@ class AddressBook extends React.Component<Props, State>{
 				            margin="dense"
 				            id="name"
 				            label="Home Phone Number"
-				            type="number"
+				            type="text"
 				            onChange={(e) => this.setState({
 				        	home_phone: e.target.value
 				        })}
@@ -327,7 +380,7 @@ class AddressBook extends React.Component<Props, State>{
 				            margin="dense"
 				            id="name"
 				            label="Postal Code"
-				            type="number"
+				            type="text"
 				            onChange={(e) => this.setState({
 				        	postal_code: e.target.value
 				        })}
@@ -343,8 +396,11 @@ class AddressBook extends React.Component<Props, State>{
 				        	country: e.target.value
 				        })}
 				          />
+				          
 
 				      </Grid>
+
+				      <FormHelperText id="component-error-text" style={{color: 'red', marginTop: '15px', justifyContent: 'center', display: `${ this.state.formHelper }`}}>{this.state.errorMessege}</FormHelperText>
 
 			        </DialogContent>
 			        <DialogActions>
