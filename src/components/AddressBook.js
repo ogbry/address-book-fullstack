@@ -130,7 +130,6 @@ class AddressBook extends React.Component<Props, State>{
 	}
 
 	handleSearch = (event) => {
-	    console.log(event.target.value)
 	    this.setState({
 	      searchVal: event.target.value
 	    })
@@ -234,7 +233,7 @@ class AddressBook extends React.Component<Props, State>{
 
 	           </AppBar>
 
-	           <AddressBookTable getData={this.getData} contacts={this.state.contacts}/>
+	           <AddressBookTable getData={this.getData} contacts={this.state.contacts} search={this.search} handleSearch={this.handleSearch} searchVal={this.state.searchVal}/>
 
 	            <Dialog fullWidth maxWidth="sm" open={this.state.open}   aria-labelledby="form-dialog-title">
 			        <DialogTitle id="form-dialog-title">New Contact</DialogTitle>

@@ -32,10 +32,7 @@ class FilterTool extends React.Component<Props, State>{
   render() {
 
   	const {classes} = this.props
-
-  	console.log(this.props)
-  	console.log(this.props.searchVal)
-
+  	
     return (
     	
     	<React.Fragment>

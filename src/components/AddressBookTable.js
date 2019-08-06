@@ -37,7 +37,6 @@ const styles = {
 	    ['@media (max-width:680px)']: {
          flexGrow: 1,
        },
-
 	},
 	  wrapper: {
 	  	display: 'flex',
@@ -136,8 +135,10 @@ class AdressBookTable extends React.Component{
 	}
 
 	handleDelete = (id) => {
+		const getId = localStorage.getItem('id')
+		console.log(getId)
         axios
-            .delete(`http://localhost:3001/addressbook/delete/` +id)
+            .delete(`http://localhost:3001/addressbook/delete/${getId}/${id}`)
             .then(res => {
                 this.props.getData();
             })
@@ -152,7 +153,9 @@ class AdressBookTable extends React.Component{
     	<Container maxWidth="xl" className={classes.root} >
     	<Grid container className={classes.wrapper}>
     	{
-    		this.props.contacts.map( item => (
+    		this.props.contacts.filter(contact => contact.first_name.toLowerCase().match(this.props.searchVal.toLowerCase()))
+
+    		.map( item => (
     				
 	    			<Card key={item.contactid} className={classes.card}>
 	    			
@@ -162,7 +165,7 @@ class AdressBookTable extends React.Component{
 						  direction="row"
 						  justify="flex-start"
 						  alignItems="flex-start"
-						>	
+						>
 							<ContactPhone style={{fontSize: '1.5em', color: '#3f51b5'}} /> &nbsp;
 				          <Typography style={{fontSize: '.8em',  wordWrap: 'break-word',}} gutterBottom variant="h5" component="h2">
 				           		{item.first_name} {item.last_name}  
@@ -180,7 +183,7 @@ class AdressBookTable extends React.Component{
 					       	</Button>
 					        
 					        <Button style={{fontSize: '.5em'}}  size="small" color="primary"
-					        	onClick={() => this.handleDelete(item.id, this.state.currentId)}
+					        	onClick={() => this.handleDelete(item.id)}
 					        >
 					          Remove
 					        </Button>

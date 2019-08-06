@@ -71,11 +71,14 @@ function getById(req, res) {
 }
 
 function deleteById(req, res) {
-  
-  const db = req.app.get('db');
 
-  db.address_book
-    .destroy({id: req.params.id})
+  const db = req.app.get('db');
+  
+  const id = req.params.id
+  const userId = req.params.userid
+
+  db.query(`Delete from address_book where contactid = ${id} and userid = ${userId};
+Delete from contacts where id = ${id}`)
     .then(cont => res.status(200).json(cont))
     .catch(err => {
      res.status(500).end()
