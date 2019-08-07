@@ -153,6 +153,7 @@ class AddressBook extends React.Component<Props, State>{
 			 	firstNameError: true,
 			 	errorMessege: 'First Name is required',
 			 	formHelper: 'flex',
+			 	helperColor: 'red'
 			 })
 		}
 
@@ -173,6 +174,21 @@ class AddressBook extends React.Component<Props, State>{
 
 			}).then(res => {
 				this.getData();
+				this.setState({
+					errorMessege: 'Contact Added',
+			 		formHelper: 'flex',
+			 		helperColor: 'black',
+			 		fName: '',
+					lName: '',
+					mobile_phone: '',
+					work_phone: '',
+					home_phone: '',
+					email: '',
+					city: '',
+					state_or_province: '',
+					postal_code: '',
+					country: '',
+				})
 			})
 			.catch(err => {
 		      console.error(err);
@@ -256,6 +272,7 @@ class AddressBook extends React.Component<Props, State>{
 				        	id="standard-required"
 					        error={this.state.firstNameError}
 					        label="First Name"
+					        value={this.state.fName}
 					        onChange={(e) => this.setState({
 				        	fName: e.target.value
 				        })}
@@ -267,6 +284,7 @@ class AddressBook extends React.Component<Props, State>{
 				            id="name"
 				            label="Last Name"
 				            type="text"
+				            value={this.state.lName}
 				            onChange={(e) => this.setState({
 				        	lName: e.target.value
 				        })}
@@ -287,6 +305,7 @@ class AddressBook extends React.Component<Props, State>{
 				            id="name"
 				            label="Mobile Phone Number"
 				            type="text"
+				            value={this.state.mobile_phone}
 				            onChange={(e) => this.setState({
 				        	mobile_phone: e.target.value
 				        })}
@@ -297,6 +316,7 @@ class AddressBook extends React.Component<Props, State>{
 				            margin="dense"
 				            id="name"
 				            label="Work Phone Number"
+				            value={this.state.work_phone}
 				            type="text"
 				            onChange={(e) => this.setState({
 				        	work_phone: e.target.value
@@ -316,6 +336,7 @@ class AddressBook extends React.Component<Props, State>{
 				            className={classes.textField}
 				            margin="dense"
 				            id="name"
+				            value={this.state.home_phone}
 				            label="Home Phone Number"
 				            type="text"
 				            onChange={(e) => this.setState({
@@ -328,6 +349,7 @@ class AddressBook extends React.Component<Props, State>{
 				            margin="dense"
 				            id="name"
 				            label="Email"
+				            value={this.state.email}
 				            type="email"
 				            onChange={(e) => this.setState({
 				        	email: e.target.value
@@ -349,6 +371,7 @@ class AddressBook extends React.Component<Props, State>{
 				            id="name"
 				            label="City"
 				            type="text"
+				            value={this.state.city}
 				            onChange={(e) => this.setState({
 				        	city: e.target.value
 				        })}
@@ -360,6 +383,7 @@ class AddressBook extends React.Component<Props, State>{
 				            id="name"
 				            label="State/Province"
 				            type="text"
+				            value={this.state.state_or_province}
 				            onChange={(e) => this.setState({
 				        	state_or_province: e.target.value
 				        })}
@@ -378,6 +402,7 @@ class AddressBook extends React.Component<Props, State>{
 				            className={classes.textField}
 				            margin="dense"
 				            id="name"
+				            value={this.state.postal_code}
 				            label="Postal Code"
 				            type="text"
 				            onChange={(e) => this.setState({
@@ -390,6 +415,7 @@ class AddressBook extends React.Component<Props, State>{
 				            margin="dense"
 				            id="name"
 				            label="Country"
+				            value={this.state.country}
 				            type="text"
 				            onChange={(e) => this.setState({
 				        	country: e.target.value
@@ -399,7 +425,7 @@ class AddressBook extends React.Component<Props, State>{
 
 				      </Grid>
 
-				      <FormHelperText id="component-error-text" style={{color: 'red', marginTop: '15px', justifyContent: 'center', display: `${ this.state.formHelper }`}}>{this.state.errorMessege}</FormHelperText>
+				      <FormHelperText id="component-error-text" style={{color: `${ this.state.helperColor }`, marginTop: '15px', justifyContent: 'center', display: `${ this.state.formHelper }`}}>{this.state.errorMessege}</FormHelperText>
 
 			        </DialogContent>
 			        <DialogActions>

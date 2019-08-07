@@ -19,6 +19,7 @@ const styles = {
 		padding: '30px',
 		width: '450px',
 		marginTop: '50px',
+		boxShadow: '0px 1px 5px 3px rgba(0,0,0,0.25)',
 		backgroundColor: '#f0f0f0',
 		['@media (max-width:450px)']: {
          width: '95%',
@@ -119,8 +120,8 @@ class SignUp extends React.Component{
 				  justify="center"
 				  alignItems="center"
 				>	
-					<AccountCircle className={classes.marginBottom} style={{color: '#f50057', fontSize: '60px',}} />
-					
+					<AccountCircle style={{color: '#f50057', fontSize: '60px',}} />
+					<Typography variant="h6"> Create an account</Typography>
 				    <form 
              		 onSubmit={(e) => this.formSignUp(e)} >
              		 

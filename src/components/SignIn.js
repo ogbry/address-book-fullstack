@@ -8,16 +8,19 @@ import TextField from '@material-ui/core/TextField';
 import {withStyles} from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button';
 import AccountCircle from '@material-ui/icons/AccountCircle'
+import PermIdentity from '@material-ui/icons/PermIdentity'
+import Lock from '@material-ui/icons/Lock'
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import FormHelperText from '@material-ui/core/FormHelperText';
-
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 const styles = {	
 	inputBox: {
 		border: 'solid 1px lightgrey',
 		padding: '30px',
 		width: '450px',
+		boxShadow: '0px 1px 5px 3px rgba(0,0,0,0.25)',
 		marginTop: '50px',
 		backgroundColor: '#f0f0f0',
 		['@media (max-width:450px)']: {
@@ -103,8 +106,6 @@ class SignIn extends React.Component<Props, State>{
 				username: this.state.username,
 				password: this.state.password,
 				
-				
-
 			})
 			.then( res => {
 				console.log(res.data)
@@ -179,8 +180,8 @@ class SignIn extends React.Component<Props, State>{
 				  justify="center"
 				  alignItems="center"
 				>	
-					<AccountCircle className={classes.marginBottom} style={{color: '#3f51b5', fontSize: '60px'}} />
-				    
+					<AccountCircle  style={{color: '#3f51b5', fontSize: '60px'}} />
+				    <Typography variant="h6"> Login to your account </Typography>
 					<form noValidate autoComplete="off"  
              		 onSubmit={(e) => this.formSubmission(e)}
              		  >
@@ -197,6 +198,13 @@ class SignIn extends React.Component<Props, State>{
 				        onChange={(e) => this.setState({
 				        	username: e.target.value
 				        })}
+				        InputProps={{
+				          startAdornment: (
+				            <InputAdornment position="start">
+				              <PermIdentity style={{color: 'grey'}}/>
+				            </InputAdornment>
+				          ),
+				        }}
 				      />
 				    
 				      <TextField className={classes.marginBottom}
@@ -212,6 +220,13 @@ class SignIn extends React.Component<Props, State>{
 				        onChange={(e) => this.setState({
 				        	password: e.target.value
 				        })}
+				        InputProps={{
+				          startAdornment: (
+				            <InputAdornment position="start">
+				              <Lock style={{color: 'grey'}}/>
+				            </InputAdornment>
+				          ),
+				        }}
 				      />
 				    
 				      

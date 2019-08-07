@@ -15,7 +15,12 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
-
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import List from '@material-ui/core/List';
+import Divider from '@material-ui/core/Divider';
+import Group from '@material-ui/icons/Group'
 
 const styles = {
 	root: {
@@ -31,14 +36,15 @@ const styles = {
 		overflowY: 'auto',
 	},
 	card: {
-  		width: '273px',
+  		width: '300px',
 	    margin: '10px',
 	    border: 'solid 1px lightgrey',
-	    ['@media (max-width:680px)']: {
+	    ['@media (max-width:1013px)']: {
          flexGrow: 1,
        },
 	},
 	  wrapper: {
+	  	border: 'solid 1px lightgrey',
 	  	display: 'flex',
 	    flexWrap: 'wrap',
 	    flexDirection: 'row',
@@ -151,9 +157,37 @@ class AdressBookTable extends React.Component{
     return (
 
     	<Container maxWidth="xl" className={classes.root} >
-    	<Grid container className={classes.wrapper}>
+    	<Grid container  style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: '20px'}}>
+    	<Grid item lg={2} md={3} sm={12} xs={12} style={{overflow: 'auto', height: '30vh', border: 'solid 1px lightgrey', }}>
+    		<List style={{display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0'}}component="nav" aria-label="main mailbox folders">
+		        <Typography variant='h5'>Groups</Typography>
+    		</List>
+    		<Divider />
+    		<List component="nav" aria-label="secondary mailbox folders">
+	    		<ListItem button>
+		          <ListItemText primary="Group 1" />
+		        </ListItem>
+		        <ListItem button>
+		          <ListItemText primary="Group 2" />
+		        </ListItem>
+		        <ListItem button>
+		          <ListItemText primary="Group 3" />
+		        </ListItem>
+		        <ListItem button>
+		          <ListItemText primary="Group 4" />
+		        </ListItem>
+		     
+		    
+	        </List>
+	        
+	     
+    	</Grid>
+    	
+    	
+    	<Grid item lg={9} md={9} sm={12} xs={12} className={classes.wrapper}>
+    		
     	{
-    		this.props.contacts.filter(contact => contact.first_name.toLowerCase().match(this.props.searchVal.toLowerCase()))
+    		this.props.contacts.filter(contact => contact.first_name.toLowerCase().match(this.props.searchVal.toLowerCase()) || contact.last_name.toLowerCase().match(this.props.searchVal.toLowerCase()))
 
     		.map( item => (
     				
@@ -191,8 +225,10 @@ class AdressBookTable extends React.Component{
 				    </Card>
 				  
     			))
-		}    		
+		}    
+
 	    </Grid> 
+	    </Grid>
 	    	<form>
 	    		<Dialog fullWidth maxWidth="sm" open={this.state.open}   aria-labelledby="form-dialog-title">
 			        <DialogTitle id="form-dialog-title">View Contact</DialogTitle>
