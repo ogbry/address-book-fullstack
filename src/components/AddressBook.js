@@ -23,7 +23,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
-
 const styles = {
 	root: {
 		fontSize: 'calc(0.75em + 1vmin)',
@@ -33,14 +32,15 @@ const styles = {
 	},
 	addIcon: {
 		fontSize: '1.45em',
-		marginRight: '20px', 
 		cursor: 'pointer', 
-		border: 'solid 2px', 
+		border: 'solid 3px', 
 		borderRadius: '100px',
+		color: 'white',
 	},
 	exitIcon: {
 		fontSize: '1.8em', 
 		cursor: 'pointer',
+		color: 'white',
 	},
 	textField: {
 		['@media (max-width:552px)']: {
@@ -48,8 +48,6 @@ const styles = {
        },
 	}
 }
-
-
 
 
 class AddressBook extends React.Component<Props, State>{
@@ -77,6 +75,7 @@ class AddressBook extends React.Component<Props, State>{
 			contacts: [],
 			query: 'ASC',
 			searchVal: '',
+			groups: [],
 		}
 	}
 
@@ -87,7 +86,6 @@ class AddressBook extends React.Component<Props, State>{
 		this.reloadData();
 	}
 
-
 	getData = () => {
 		const uId = localStorage.getItem('id');
 
@@ -97,7 +95,17 @@ class AddressBook extends React.Component<Props, State>{
 	        	this.setState({
 	        		contacts: result.data
 	        	})
-	    })
+	        	return result
+	   	 	})
+	   	 	.then(x=> {
+	   	 		axios.get(`http://localhost:3001/grouplist/${uId}`)
+	        
+				        .then(result => {
+				        	this.setState({
+				        		groups: result.data
+				        	})
+				    })
+	   	 	})
 	}
 
 
@@ -199,7 +207,6 @@ class AddressBook extends React.Component<Props, State>{
   render() {
 
   	const {classes} = this.props
-  	
 
     return (
     	<React.Fragment>
@@ -236,12 +243,16 @@ class AddressBook extends React.Component<Props, State>{
 	                </Box>
 	                <Box>
 	                <Tooltip title="Add New Contact">
-	                 <Add className={classes.addIcon} onClick={() => this.setState({
+	                <IconButton onClick={() => this.setState({
 	                 		open: true,
-	                 })}/>
+	                 })}>
+	                 <Add className={classes.addIcon} />
+	                 </IconButton>
 	                 </Tooltip>
 	                 <Tooltip title="Logout">
-	                 <ExitToApp onClick={(e) => this.logout(e)} className={classes.exitIcon} />
+	                 <IconButton onClick={(e) => this.logout(e)}>
+	                 <ExitToApp  className={classes.exitIcon} />
+	                 </IconButton>
 	                 </Tooltip>
 	                </Box>
 	                </Grid>
@@ -249,7 +260,7 @@ class AddressBook extends React.Component<Props, State>{
 
 	           </AppBar>
 
-	           <AddressBookTable getData={this.getData} contacts={this.state.contacts} search={this.search} handleSearch={this.handleSearch} searchVal={this.state.searchVal}/>
+	           <AddressBookTable getData={this.getData} contacts={this.state.contacts} search={this.search} handleSearch={this.handleSearch} searchVal={this.state.searchVal} groups={this.state.groups}/>
 
 	            <Dialog fullWidth maxWidth="sm" open={this.state.open}   aria-labelledby="form-dialog-title">
 			        <DialogTitle id="form-dialog-title">New Contact</DialogTitle>
@@ -442,6 +453,8 @@ class AddressBook extends React.Component<Props, State>{
 			        </DialogActions>
 			        </form>
 			    </Dialog>
+
+
 
 	    </Container>
 

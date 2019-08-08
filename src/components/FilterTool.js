@@ -51,7 +51,7 @@ class FilterTool extends React.Component<Props, State>{
 			  alignItems="center"
 			  style={{marginTop: '80px',}}
 			>
-				 	<Grid item lg={1} md={2} sm={2} xs={4} >
+				 	<Grid item lg={2} md={2} sm={3} xs={4} >
 			          <FormControl style={{width: '100%'}}>
 				        <InputLabel htmlFor="age-simple">By Last Name</InputLabel>
 				        <Select
@@ -64,7 +64,7 @@ class FilterTool extends React.Component<Props, State>{
 				      </FormControl>
 			        </Grid>
 
-			        <Grid item lg={2} md={3} sm={3} xs={8} >
+			        <Grid item lg={2} md={4} sm={4} xs={8} >
 			           <TextField
 			           style={{width: '100%',}}
 						className={classes.textField}

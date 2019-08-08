@@ -16,11 +16,20 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
-import Group from '@material-ui/icons/Group'
+import GroupAdd from '@material-ui/icons/GroupAdd'
+import Tooltip from '@material-ui/core/Tooltip';
+import PeopleOutline from '@material-ui/icons/PeopleOutline';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+
 
 const styles = {
 	root: {
@@ -58,7 +67,6 @@ const styles = {
 		['@media (max-width:552px)']: {
          width: '100%',
        },
-
 	}
 }
 
@@ -76,10 +84,19 @@ class AdressBookTable extends React.Component{
 	        editButton: 'flex',
 	        saveButton: 'none',
 	        currentId: 0,
+	        groupDialog: false,
+	        helpertextError: ' ',
+	        helperError: false,
+	        groupName: '',
+	        groupFormHelper: 'none',
+	        groups: [],
+	        addGroupDialog: false,
+	        groupValue: '',
+
 		}
 		this.formSubmitUpdate = this.formSubmitUpdate.bind(this);
+		this.formCreateGroup = this.formCreateGroup.bind(this);
 	}
-
 
 	handleOpenDialog = (id) => {
 
@@ -106,11 +123,17 @@ class AdressBookTable extends React.Component{
 		})
 	}
 
+	handleGroup = (id) => {
+		this.setState({
+			addGroupDialog: true,
+		})
+	}
+
 	formSubmitUpdate(e) {
 
-		console.log('edit')
 		const contactId = this.state.currentId
-		console.log(this.state.fName)
+
+
 		axios.patch(`http://localhost:3001/addressbook/update/` +contactId, {
 
 	        		first_name: this.state.fName, 
@@ -137,6 +160,7 @@ class AdressBookTable extends React.Component{
 				editButton: 'flex', 
 				saveButton: 'none', 
 				disabled: true,
+
 			})
 	}
 
@@ -150,37 +174,72 @@ class AdressBookTable extends React.Component{
             })
 	}
 
+	formCreateGroup(e){
+		e.preventDefault();
+
+		if( this.state.groupName.length <= 0){
+			 this.setState({
+			 	helpertextError: "Can't leave this field blank",
+			 	helperError: true,
+			 })
+		}
+
+		else{
+			axios.post('http://localhost:3001/creategroup' , {
+
+				userid: localStorage.getItem('id'),
+				group_name: this.state.groupName,
+
+			}).then(res => {
+				this.props.getData();
+				this.setState({
+					groupFormHelper: 'flex',
+				})
+			})
+			.catch(err => {
+		      console.error(err);
+		    }); 
+		}
+	}
+
+	selectGroup(e){
+		this.setState({
+			groupValue: e
+		})
+	}
+	
+
   render() {
 
   	const {classes} = this.props
-  	
     return (
 
     	<Container maxWidth="xl" className={classes.root} >
     	<Grid container  style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: '20px'}}>
-    	<Grid item lg={2} md={3} sm={12} xs={12} style={{overflow: 'auto', height: '30vh', border: 'solid 1px lightgrey', }}>
-    		<List style={{display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0'}}component="nav" aria-label="main mailbox folders">
-		        <Typography variant='h5'>Groups</Typography>
-    		</List>
-    		<Divider />
-    		<List component="nav" aria-label="secondary mailbox folders">
-	    		<ListItem button>
-		          <ListItemText primary="Group 1" />
-		        </ListItem>
-		        <ListItem button>
-		          <ListItemText primary="Group 2" />
-		        </ListItem>
-		        <ListItem button>
-		          <ListItemText primary="Group 3" />
-		        </ListItem>
-		        <ListItem button>
-		          <ListItemText primary="Group 4" />
-		        </ListItem>
-		     
-		    
-	        </List>
+    	<Grid item lg={2} md={3} sm={12} xs={12} style={{overflow: 'auto', height: '30vh', border: 'solid 1px lightgrey', backgroundColor: '#f1f1f1'}}>
+    			
+    			<List style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}component="nav" aria-label="main mailbox folders">
+						        <Typography variant='h5'>Groups</Typography>
+						        <Tooltip title="Add New Group" placement="left">
+						        	<IconButton onClick={() => this.setState({ groupDialog: true, })}>
+						        		<GroupAdd  style={{fontSize: '1.5em', color: 'grey'}}/>
+						        	</IconButton>
+						        </Tooltip>
+				    		</List>
+				    		<Divider />
+    		{
+    			this.props.groups.map( group => (
+
+				    		<List key={group.id} component="nav" aria-label="secondary mailbox folders">
+					    		<ListItem button>
+						          <ListItemText align="center" primary={group.group_name} />
+						        </ListItem>
+						     
+					        </List>
+
+    				))
+    		}
 	        
-	     
     	</Grid>
     	
     	
@@ -220,6 +279,11 @@ class AdressBookTable extends React.Component{
 					        	onClick={() => this.handleDelete(item.id)}
 					        >
 					          Remove
+					        </Button>
+					        <Button style={{fontSize: '.5em'}}  size="small" color="primary"
+					        	onClick={() => this.handleGroup(item.id)}
+					        >
+					          Add to Group
 					        </Button>
 					    </CardActions>
 				    </Card>
@@ -419,7 +483,76 @@ class AdressBookTable extends React.Component{
 			          </Button>
 			        </DialogActions>
 			    </Dialog>
+
+			    <Dialog open={this.state.groupDialog}>
+			    	<DialogTitle>New Group</DialogTitle>
+			    		<form onSubmit={(e) => this.formCreateGroup(e)} >
+					    	<DialogContent>
+					    		<TextField
+					            className={classes.textField}
+					            helperText={this.state.helpertextError}
+					            error={this.state.helperError}
+					            margin="dense"
+					            value={this.state.groupName}
+					            label="Group Name"
+					            type="text"
+					            onChange={(e) => this.setState({
+					        		groupName: e.target.value
+					        	})}
+					        	InputProps={{
+							          startAdornment: (
+							            <InputAdornment position="start">
+							              <PeopleOutline />
+							            </InputAdornment>
+							          ),
+							        }}
+					          />
+					    	</DialogContent>
+				    	</form>
+				    	<FormHelperText style={{display: 'flex', justifyContent: 'center', display: `${ this.state.groupFormHelper }`}}>Group Added</FormHelperText>
+				    	<DialogActions>
+				    		<Button type="submit" color="primary">
+					            Add
+					          </Button>
+				    		<Button onClick={() => this.setState({groupDialog: false, })} color="primary">
+					            Close
+					          </Button>
+				    	</DialogActions>
+				    	
+			    </Dialog>
 			    </form>
+
+			    <Dialog open={this.state.addGroupDialog}>
+			    	<DialogTitle> Add to Group </DialogTitle>
+				    	<DialogContent>
+				    		<FormControl fullWidth variant="outlined" >
+						        <InputLabel >
+						          Groups
+						        </InputLabel>
+						        <Select
+						          	value={this.state.groupValue}
+				          			onChange={(e) => this.selectGroup(e.target.value)}
+						        >
+
+						          {
+						          	this.props.groups.map(g => (
+
+						          		<MenuItem key={g.id} value={g.id}>{g.group_name}</MenuItem>
+
+						          		))
+						          }
+						        </Select>
+						    </FormControl>
+				    	</DialogContent>
+				    	<DialogActions>
+					    		<Button color="primary">
+						            Add
+						          </Button>
+					    		<Button onClick={() => this.setState({addGroupDialog: false, })} color="primary">
+						            Close
+						        </Button>
+					   	</DialogActions>
+			    </Dialog>
 	    </Container>
 
     )

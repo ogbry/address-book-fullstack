@@ -4,7 +4,7 @@ const cors = require("cors");
 
 const users = require('./controllers/users.js');
 const contacts = require('./controllers/contacts.js');
-
+const groups = require('./controllers/groups.js');
 
 
 massive({
@@ -20,14 +20,21 @@ massive({
 
   app.use(express.json());
 
+  //Users
   app.post('/signup', users.create);
   app.post('/signin', users.login);
+  
+  //Contacts
   app.post('/createcontact', contacts.createContact);
-
   app.get('/addressbook/:id', contacts.contactList);
   app.get('/addressbook/view/:id', contacts.getById);
   app.delete('/addressbook/delete/:userid/:id', contacts.deleteById);
   app.patch('/addressbook/update/:id', contacts.updateContact)
+
+  //Groups
+  app.post('/creategroup', groups.createGroup);
+  app.get('/grouplist/:id', groups.groupList);
+  // app.get('/addtogroup/:id', groups.addToGroup);
 
   const PORT = 3001;
   app.listen(PORT, () => {

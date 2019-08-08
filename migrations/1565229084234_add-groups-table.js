@@ -1,8 +1,8 @@
 exports.shorthands = undefined;
 
-exports.up = pgm => {
-  pgm.createTable('address_book', {
-    	id: {
+exports.up = (pgm) => {
+    pgm.createTable('groups', {
+        id: {
             type: 'serial',
             primaryKey: true,
         },
@@ -11,11 +11,14 @@ exports.up = pgm => {
             notNull: true,
             references: '"users"',
         },
-        contactid: {
-            type: 'integer',
+        group_name: {
+            type: 'text',
             notNull: true,
-            references: '"contacts"',
-        },
+        }
         
-  });
+    })
+};
+
+exports.down = (pgm) => {
+
 };

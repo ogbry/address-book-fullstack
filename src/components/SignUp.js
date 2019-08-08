@@ -197,7 +197,7 @@ class SignUp extends React.Component{
 				        Sign Up
 				      </Button>
 
-				      <FormHelperText id="component-error-text" style={{color: 'red', marginTop: '10px', display: `${ this.state.successMessege }`}}>Account Created, Login? Click SIGN IN</FormHelperText>
+				      <FormHelperText id="component-error-text" style={{color: 'black', marginTop: '10px', display: `${ this.state.successMessege }`}}>Account Created, Login? Click SIGN IN</FormHelperText>
 
 				      <Grid
 						  container
