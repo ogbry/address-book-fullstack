@@ -22,6 +22,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import PeopleOutline from '@material-ui/icons/PeopleOutline';
+import InputAdornment from '@material-ui/core/InputAdornment';
+
 
 const styles = {
 	root: {
@@ -76,10 +79,14 @@ class AddressBook extends React.Component<Props, State>{
 			query: 'ASC',
 			searchVal: '',
 			groups: [],
+			queryGroupId: 0,
+			editDialog: false,
+			editHelpertextError: '',
+			editHelperError: false,
+			nameValue: '',
+			groupUpdateId: 0,
 		}
 	}
-
-
 
 	componentDidMount(){
 		this.getData();
@@ -88,6 +95,7 @@ class AddressBook extends React.Component<Props, State>{
 
 	getData = () => {
 		const uId = localStorage.getItem('id');
+		const groupId = this.state.queryGroupId
 
 	        axios.get(`http://localhost:3001/addressbook/${uId}?sort=${this.state.query}`)
 	        
@@ -143,6 +151,67 @@ class AddressBook extends React.Component<Props, State>{
 	    })
 	}
 
+	getGroupId = (id) =>{
+
+		console.log(id)
+
+		const uId = localStorage.getItem('id')
+
+		axios.get(`http://localhost:3001/addressbook/${uId}?groups=${id}`)
+		.then(result => {
+	        	this.setState({
+	        		contacts: result.data
+	        	})
+	        	return result
+	   	 	})
+	   	 	.then(x=> {
+	   	 		axios.get(`http://localhost:3001/grouplist/${uId}`)
+	        
+				        .then(result => {
+				        	this.setState({
+				        		groups: result.data
+				        	})
+				    })
+	   	 	})
+	}
+
+	getEditId = (id) => {
+		
+		this.setState({
+			editDialog: true,
+			groupUpdateId: id,
+		})
+
+	}
+
+	formSubmitUpdateGroup(e){
+		e.preventDefault();
+
+		if( this.state.nameValue.length <= 0){
+			 this.setState({
+			 	editHelpertextError: "Can't leave this field blank",
+			 	editHelperError: true,
+			 })
+		}
+
+		else{
+
+			axios.patch(`http://localhost:3001/editgroup/${localStorage.getItem('id')}/${this.state.groupUpdateId}` , {
+
+				group_name: this.state.nameValue,
+
+			}).then(res => {
+				this.getData();
+				this.setState({
+					editHelpertextError: 'Group name edited',
+					nameValue: '',
+				})
+			})
+			.catch(err => {
+		      console.error(err);
+		    }); 
+		}
+	}
 
 	logout(e){
 
@@ -260,8 +329,10 @@ class AddressBook extends React.Component<Props, State>{
 
 	           </AppBar>
 
-	           <AddressBookTable getData={this.getData} contacts={this.state.contacts} search={this.search} handleSearch={this.handleSearch} searchVal={this.state.searchVal} groups={this.state.groups}/>
-
+	           <AddressBookTable 
+	           	getData={this.getData} contacts={this.state.contacts} search={this.search} handleSearch={this.handleSearch} searchVal={this.state.searchVal} groups={this.state.groups} getGroupId={this.getGroupId} queryGroupId={this.state.queryGroupId} getEditId={this.getEditId}
+	           />
+	           
 	            <Dialog fullWidth maxWidth="sm" open={this.state.open}   aria-labelledby="form-dialog-title">
 			        <DialogTitle id="form-dialog-title">New Contact</DialogTitle>
 
@@ -445,7 +516,7 @@ class AddressBook extends React.Component<Props, State>{
 			            Add
 			          </Button>
 			          <Button onClick={() => this.setState({
-	                 		open: false,
+	                 		open: false, formHelper: 'none'
 	                 })} color="primary">
 			            Cancel
 			          </Button>
@@ -454,7 +525,44 @@ class AddressBook extends React.Component<Props, State>{
 			        </form>
 			    </Dialog>
 
+			    <Dialog open={this.state.editDialog}>
+			    <form onSubmit={(e) => this.formSubmitUpdateGroup(e)}>
+			    	<DialogTitle>Edit Group Name</DialogTitle>
+			    	<DialogContent>
+			    		<TextField
+					        className={classes.textField}
+					        helperText={this.state.editHelpertextError}
+					        error={this.state.editHelperError}
+					        margin="dense"
+					        value={this.state.nameValue}
+					        label="Group Name"
+				            type="text"
+				            onChange={(e) => this.setState({
+				        		nameValue: e.target.value
+				        	})}
+				        	InputProps={{
+					          startAdornment: (
+				   		        <InputAdornment position="start">
+					              <PeopleOutline />
+						            </InputAdornment>
+							          ),
+							        }}
+					          />
+			    	</DialogContent>
 
+			    	<DialogActions>
+			    		<Button>
+			    			Save
+			    		</Button>
+
+			    		<Button onClick={() => this.setState({
+			    			editDialog: false, editHelpertextError: '',
+			    		})}>
+			    			Cancel
+			    		</Button>
+			    	</DialogActions>
+			    	</form>
+			    </Dialog>
 
 	    </Container>
 

@@ -43,19 +43,28 @@ function createContact(req, res) {
     .catch(err => {
       console.error(err);
     });  
-          
+
 }
 
 function contactList(req, res) {
-  const db = req.app.get('db');
 
+  const db = req.app.get('db');
   const userId = req.params.id
   const sort = req.query.sort
-  
-  db.query(`select * from contacts INNER JOIN address_book on contacts.id = address_book.contactid where address_book.userid = ${userId} ORDER BY last_name ${sort}`, [])
+  const groups = req.query.groups
+
+  if(groups == undefined){
+    db.query(`select * from contacts INNER JOIN address_book on contacts.id = address_book.contactid where address_book.userid = ${userId} ORDER BY last_name ${sort}`, [])
        .then(data => {
            res.status(200).json(data)
        })
+  }
+  else{
+    db.query(`select * from contacts INNER JOIN address_book on contacts.id = address_book.contactid where address_book.userid = ${userId} and address_book.groupid = ${groups}`)
+      .then(data => {
+           res.status(200).json(data)
+       })
+  }
 }
 
 function getById(req, res) {

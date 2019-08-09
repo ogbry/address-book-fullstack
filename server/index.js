@@ -19,7 +19,7 @@ massive({
   app.set('db', db);
 
   app.use(express.json());
-
+  
   //Users
   app.post('/signup', users.create);
   app.post('/signin', users.login);
@@ -34,7 +34,8 @@ massive({
   //Groups
   app.post('/creategroup', groups.createGroup);
   app.get('/grouplist/:id', groups.groupList);
-  // app.get('/addtogroup/:id', groups.addToGroup);
+  app.patch('/addressbook/addtogroup/:userid/:id', groups.addToGroup);
+  app.patch('/editgroup/:userid/:id', groups.updateGroupById);
 
   const PORT = 3001;
   app.listen(PORT, () => {

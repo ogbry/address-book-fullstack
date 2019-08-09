@@ -16,6 +16,10 @@ exports.up = pgm => {
             notNull: true,
             references: '"contacts"',
         },
-        
+        groupid: {
+        	type: 'integer',
+        	notNull: false,
+        	references: '"groups"',
+        },
   });
 };

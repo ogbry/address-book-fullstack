@@ -19,7 +19,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
-import GroupAdd from '@material-ui/icons/GroupAdd'
+import GroupAdd from '@material-ui/icons/GroupAdd';
+import Edit from '@material-ui/icons/Edit';
 import Tooltip from '@material-ui/core/Tooltip';
 import PeopleOutline from '@material-ui/icons/PeopleOutline';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -29,7 +30,11 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 
 const styles = {
 	root: {
@@ -67,7 +72,17 @@ const styles = {
 		['@media (max-width:552px)']: {
          width: '100%',
        },
-	}
+	},
+	groupGrid: {
+		overflow: 'auto', 
+		height: '40vh', 
+		border: 'solid 1px lightgrey', 
+		backgroundColor: '#f1f1f1',
+		['@media (max-width:950px)']: {
+         height: 'auto',
+       },
+	},
+
 }
 
 class AdressBookTable extends React.Component{
@@ -92,10 +107,12 @@ class AdressBookTable extends React.Component{
 	        groups: [],
 	        addGroupDialog: false,
 	        groupValue: '',
-
+	        contactAddedHelper: 'none',
 		}
 		this.formSubmitUpdate = this.formSubmitUpdate.bind(this);
 		this.formCreateGroup = this.formCreateGroup.bind(this);
+		this.formSubmitGroup = this.formSubmitGroup.bind(this);
+
 	}
 
 	handleOpenDialog = (id) => {
@@ -123,11 +140,35 @@ class AdressBookTable extends React.Component{
 		})
 	}
 
+
 	handleGroup = (id) => {
+
+
 		this.setState({
 			addGroupDialog: true,
+			currentId: id,
 		})
 	}
+
+	formSubmitGroup(e){
+		const contactId = this.state.currentId		
+		const user_id = localStorage.getItem('id')
+
+		axios.patch(`http://localhost:3001/addressbook/addtogroup/${user_id}/${contactId}` , {
+
+				groupid: this.state.groupValue,
+
+		})
+		.then(res => {
+			this.props.getData();
+		});
+
+		this.setState({
+			groupValue: '',
+			contactAddedHelper: 'flex',
+		})
+	}
+
 
 	formSubmitUpdate(e) {
 
@@ -149,8 +190,6 @@ class AdressBookTable extends React.Component{
 
 	        	})
 				.then(res => {
-
-					console.log(res.data)
 					this.props.getData();
 				});
 
@@ -166,13 +205,14 @@ class AdressBookTable extends React.Component{
 
 	handleDelete = (id) => {
 		const getId = localStorage.getItem('id')
-		console.log(getId)
         axios
             .delete(`http://localhost:3001/addressbook/delete/${getId}/${id}`)
             .then(res => {
                 this.props.getData();
             })
 	}
+
+	
 
 	formCreateGroup(e){
 		e.preventDefault();
@@ -194,6 +234,7 @@ class AdressBookTable extends React.Component{
 				this.props.getData();
 				this.setState({
 					groupFormHelper: 'flex',
+					groupName: '',
 				})
 			})
 			.catch(err => {
@@ -212,38 +253,63 @@ class AdressBookTable extends React.Component{
   render() {
 
   	const {classes} = this.props
+
     return (
 
     	<Container maxWidth="xl" className={classes.root} >
     	<Grid container  style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', marginTop: '20px'}}>
-    	<Grid item lg={2} md={3} sm={12} xs={12} style={{overflow: 'auto', height: '30vh', border: 'solid 1px lightgrey', backgroundColor: '#f1f1f1'}}>
+    	<Grid item lg={2} md={3} sm={12} xs={12} className={classes.groupGrid}>
     			
-    			<List style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px'}}component="nav" aria-label="main mailbox folders">
-						        <Typography variant='h5'>Groups</Typography>
+    			<List style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0px'}}component="nav" aria-label="main mailbox folders">
+						        
 						        <Tooltip title="Add New Group" placement="left">
-						        	<IconButton onClick={() => this.setState({ groupDialog: true, })}>
+						        	<IconButton style={{padding: '5px'}} onClick={() => this.setState({ groupDialog: true, })}>
 						        		<GroupAdd  style={{fontSize: '1.5em', color: 'grey'}}/>
 						        	</IconButton>
 						        </Tooltip>
 				    		</List>
 				    		<Divider />
+
+							<ExpansionPanel style={{margin: 0}}>
+						        <ExpansionPanelSummary
+						          expandIcon={<ExpandMoreIcon />}
+						          aria-controls="panel1bh-content"
+						          id="panel1bh-header"
+						        >
+						          <Typography className={classes.heading}>Group Lists</Typography>
+						        </ExpansionPanelSummary>
+						        <ExpansionPanelDetails>
+								 	<Button  fullWidth onClick={() => this.props.getData()}>All
+								 	</Button>
+
+								</ExpansionPanelDetails>	
+						      		    		
     		{
     			this.props.groups.map( group => (
 
-				    		<List key={group.id} component="nav" aria-label="secondary mailbox folders">
-					    		<ListItem button>
-						          <ListItemText align="center" primary={group.group_name} />
-						        </ListItem>
-						     
-					        </List>
+				    	<ExpansionPanelDetails
+				    	 key={group.id}>
+						 	<Button onClick={() => this.props.getGroupId(group.id)} fullWidth>{group.group_name}
+						 	</Button>
+						 	<Tooltip title="Edit Group Name" placement="top">
+						 	<IconButton onClick={() => this.props.getEditId(group.id)}>
+						 		<Edit className={classes.icon} />
+						 	</IconButton>
+						 	</Tooltip>
+						 	<Tooltip title="Remove Group" placement="top">
+						 	<IconButton>
+						 		<DeleteOutlinedIcon className={classes.icon} />
+						 	</IconButton>
+						 	</Tooltip>
+						</ExpansionPanelDetails>	
 
     				))
-    		}
-	        
+    		}	
+	        </ExpansionPanel>		
     	</Grid>
     	
     	
-    	<Grid item lg={9} md={9} sm={12} xs={12} className={classes.wrapper}>
+    	<Grid item lg={9} md={8} sm={12} xs={12} className={classes.wrapper}>
     		
     	{
     		this.props.contacts.filter(contact => contact.first_name.toLowerCase().match(this.props.searchVal.toLowerCase()) || contact.last_name.toLowerCase().match(this.props.searchVal.toLowerCase()))
@@ -511,7 +577,7 @@ class AdressBookTable extends React.Component{
 				    	</form>
 				    	<FormHelperText style={{display: 'flex', justifyContent: 'center', display: `${ this.state.groupFormHelper }`}}>Group Added</FormHelperText>
 				    	<DialogActions>
-				    		<Button type="submit" color="primary">
+				    		<Button onClick={this.formCreateGroup} type="submit" color="primary">
 					            Add
 					          </Button>
 				    		<Button onClick={() => this.setState({groupDialog: false, })} color="primary">
@@ -544,14 +610,18 @@ class AdressBookTable extends React.Component{
 						        </Select>
 						    </FormControl>
 				    	</DialogContent>
+
+				    	<FormHelperText style={{display: 'flex', justifyContent: 'center', display: `${ this.state.contactAddedHelper }`}}>Added to the Group</FormHelperText>
+
 				    	<DialogActions>
-					    		<Button color="primary">
+					    		<Button color="primary" onClick={this.formSubmitGroup}>
 						            Add
 						          </Button>
-					    		<Button onClick={() => this.setState({addGroupDialog: false, })} color="primary">
+					    		<Button onClick={() => this.setState({addGroupDialog: false, contactAddedHelper: 'none', })} color="primary">
 						            Close
 						        </Button>
 					   	</DialogActions>
+
 			    </Dialog>
 	    </Container>
 
