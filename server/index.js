@@ -38,7 +38,12 @@ massive({
   app.patch('/editgroup/:userid/:id', groups.updateGroupById);
 
   const PORT = 5001;
-  app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
+  app.listen(PORT, (err) => {
+    if(!err){
+      console.clear();
+      console.log(`Server is listening to port ${PORT}`)
+    }else{
+      console.log(err)
+    }
   });
 });

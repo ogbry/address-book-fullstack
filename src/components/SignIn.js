@@ -110,12 +110,12 @@ class SignIn extends React.Component<Props, State>{
 			.then( res => {
 				console.log(res.data)
 				if(res.data.error === undefined){
-					this.props.history.push('/')
+					
 
 					localStorage.setItem('token', res.data.token)
 					localStorage.setItem('id', res.data.id)
 
-					window.location.reload(true);
+					this.props.history.push('/')
 				}
 				else if(res.data.error === 'Incorrect Password'){
 					this.setState({
