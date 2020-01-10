@@ -39,7 +39,7 @@ const styles = {
 	}
 }
 
-class SignIn extends React.Component<Props, State>{
+class SignIn extends React.Component{
 
 
 	constructor(){
@@ -55,7 +55,9 @@ class SignIn extends React.Component<Props, State>{
 	       	username: '',
 	       	password: '',
 	       	displayValue: 'none',
-	       	errorType: '',
+		    errorType: '',
+			logButton: 'LOGIN',
+			logDisabled: false,
 		}
 	}
 
@@ -108,28 +110,47 @@ class SignIn extends React.Component<Props, State>{
 				
 			})
 			.then( res => {
-				console.log(res.data)
 				if(res.data.error === undefined){
 					
+					this.setState({
+						logButton: 'LOGGING IN',
+						logDisabled: true
+					})
+					setTimeout(() => {
+						localStorage.setItem('token', res.data.token)
+						localStorage.setItem('id', res.data.id)
 
-					localStorage.setItem('token', res.data.token)
-					localStorage.setItem('id', res.data.id)
-
-					this.props.history.push('/')
+						this.props.history.push('/')
+					}, 2000);
 				}
 				else if(res.data.error === 'Incorrect Password'){
 					this.setState({
-						displayValue: 'flex',
-						errorType: 'Password is Incorrect',
-
+						logButton: 'LOGGING IN',
+						logDisabled: true
 					})
+					setTimeout(() => {
+						this.setState({
+							displayValue: 'flex',
+							errorType: 'Password is Incorrect',
+							logButton: "LOGIN",
+							logDisabled: false
+						})
+					}, 1500);
 				}
-				else if(res.data.error === 'Incorrect Password'){
+				else if(res.data.error === 'Incorrect Username'){
 					this.setState({
-						displayValue: 'flex',
-						errorType: 'Username is Incorrect',
-
+						logButton: "LOGGING IN",
+						logDisabled: true
 					})
+
+					setTimeout(() => {
+						this.setState({
+							displayValue: 'flex',
+							errorType: 'Username is Incorrect',
+							logButton: "LOGIN",
+							logDisabled: false
+						})
+					}, 1500);
 				}
 				else {
 					this.setState({
@@ -182,7 +203,7 @@ class SignIn extends React.Component<Props, State>{
 				>	
 					<AccountCircle  style={{color: '#3f51b5', fontSize: '60px'}} />
 				    <Typography variant="h6"> Login to your account </Typography>
-					<form noValidate autoComplete="off"  
+					<form autoComplete="off"  
              		 onSubmit={(e) => this.formSubmission(e)}
              		  >
 					<TextField 
@@ -230,8 +251,14 @@ class SignIn extends React.Component<Props, State>{
 				      />
 				    
 				      
-				      <Button variant="contained" type='submit' color="primary" fullWidth className={classes.button} >
-				        LogIn
+					  <Button 
+					  disabled={this.state.logDisabled}
+					  variant="contained"
+					   type='submit' 
+					   color="primary" 
+					   fullWidth className={classes.button} 
+					   >
+				        {this.state.logButton}
 				      </Button>
 
 
