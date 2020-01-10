@@ -551,7 +551,7 @@ class AddressBook extends React.Component<Props, State>{
 			    	</DialogContent>
 
 			    	<DialogActions>
-			    		<Button>
+			    		<Button onClick={(e) => this.formSubmitUpdateGroup(e)}>
 			    			Save
 			    		</Button>
 
