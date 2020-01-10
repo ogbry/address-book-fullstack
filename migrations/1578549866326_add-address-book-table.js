@@ -15,6 +15,7 @@ exports.up = pgm => {
             type: 'integer',
             notNull: true,
             references: '"contacts"',
+            onDelete: 'cascade'
         },
         groupid: {
         	type: 'integer',

@@ -37,7 +37,7 @@ massive({
   app.patch('/addressbook/addtogroup/:userid/:id', groups.addToGroup);
   app.patch('/editgroup/:userid/:id', groups.updateGroupById);
 
-  const PORT = 3001;
+  const PORT = 5001;
   app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
   });
