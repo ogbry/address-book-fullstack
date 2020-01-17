@@ -35,6 +35,9 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import Alert from '@material-ui/lab/Alert';
+import CloseIcon from '@material-ui/icons/Close';
+import CheckIcon from '@material-ui/icons/Check';
 
 const styles = {
 	root: {
@@ -107,7 +110,8 @@ class AdressBookTable extends React.Component{
 	        groups: [],
 	        addGroupDialog: false,
 	        groupValue: '',
-	        contactAddedHelper: 'none',
+			contactAddedHelper: 'none',
+			deleteDialog: false,
 		}
 		this.formSubmitUpdate = this.formSubmitUpdate.bind(this);
 		this.formCreateGroup = this.formCreateGroup.bind(this);
@@ -169,7 +173,6 @@ class AdressBookTable extends React.Component{
 		})
 	}
 
-
 	formSubmitUpdate(e) {
 
 		const contactId = this.state.currentId
@@ -203,16 +206,31 @@ class AdressBookTable extends React.Component{
 			})
 	}
 
-	handleDelete = (id) => {
+	handleDeleteDialog = (id) => {
+		this.setState({deleteDialog: true, currentDeleteId: id})
+		
+	}
+
+	confirmDelete = (id) => {
+		let newId = this.state.currentDeleteId
 		const getId = localStorage.getItem('id')
         axios
-            .delete(`/addressbook/delete/${getId}/${id}`)
+            .delete(`/addressbook/delete/${getId}/${newId}`)
             .then(res => {
+				this.setState({
+					deleteDialog: false,
+					currentDeleteId: null
+				})
                 this.props.getData();
             })
 	}
 
-	
+	deleteDialogClose = () => {
+		this.setState({
+			deleteDialog: false,
+			currentDeleteId: null
+		})
+	}
 
 	formCreateGroup(e){
 		e.preventDefault();
@@ -251,9 +269,7 @@ class AdressBookTable extends React.Component{
 	
 
   render() {
-
   	const {classes} = this.props
-
     return (
 
     	<Container maxWidth="xl" className={classes.root} >
@@ -342,7 +358,8 @@ class AdressBookTable extends React.Component{
 					       	</Button>
 					        
 					        <Button style={{fontSize: '.5em'}}  size="small" color="primary"
-					        	onClick={() => this.handleDelete(item.id)}
+								onClick={() => this.handleDeleteDialog(item.id)}
+								// onClick={() => this.setState({deleteDialog: true})}
 					        >
 					          Remove
 					        </Button>
@@ -623,6 +640,40 @@ class AdressBookTable extends React.Component{
 					   	</DialogActions>
 
 			    </Dialog>
+				
+
+				<Dialog open={this.state.deleteDialog}>
+					<Alert severity="warning"
+					action={
+						<>
+							<IconButton
+							aria-label="close"
+							color="inherit"
+							size="small"
+							onClick={() => {
+								this.confirmDelete()
+							}}
+							>
+							<CheckIcon fontSize="inherit" style={{color: 'darkgreen'}} />
+							</IconButton>
+					
+							<IconButton
+							aria-label="close"
+							color="inherit"
+							size="small"
+							onClick={() => {
+								this.deleteDialogClose()
+							}}
+							>
+							<CloseIcon fontSize="inherit" />
+							</IconButton>
+						</>
+					}
+					>
+					Deleting this person will remove all of his data!
+					</Alert>	
+			    </Dialog>
+				
 	    </Container>
 
     )
