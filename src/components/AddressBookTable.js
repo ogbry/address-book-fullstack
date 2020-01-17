@@ -206,12 +206,12 @@ class AdressBookTable extends React.Component{
 			})
 	}
 
-	handleDeleteDialog = (id) => {
-		this.setState({deleteDialog: true, currentDeleteId: id})
+	handleDeleteDialog = (id, first_name) => {
+		this.setState({deleteDialog: true, currentDeleteId: id, currentDeleteName: first_name})
 		
 	}
 
-	confirmDelete = (id) => {
+	confirmDelete = () => {
 		let newId = this.state.currentDeleteId
 		const getId = localStorage.getItem('id')
         axios
@@ -219,7 +219,8 @@ class AdressBookTable extends React.Component{
             .then(res => {
 				this.setState({
 					deleteDialog: false,
-					currentDeleteId: null
+					currentDeleteId: null,
+					currentDeleteName: null
 				})
                 this.props.getData();
             })
@@ -228,7 +229,8 @@ class AdressBookTable extends React.Component{
 	deleteDialogClose = () => {
 		this.setState({
 			deleteDialog: false,
-			currentDeleteId: null
+			currentDeleteId: null,
+			currentDeleteName: null
 		})
 	}
 
@@ -358,7 +360,7 @@ class AdressBookTable extends React.Component{
 					       	</Button>
 					        
 					        <Button style={{fontSize: '.5em'}}  size="small" color="primary"
-								onClick={() => this.handleDeleteDialog(item.id)}
+								onClick={() => this.handleDeleteDialog(item.id, item.first_name)}
 								// onClick={() => this.setState({deleteDialog: true})}
 					        >
 					          Remove
@@ -670,7 +672,7 @@ class AdressBookTable extends React.Component{
 						</>
 					}
 					>
-					Deleting this person will remove all of his data!
+					Deleting {this.state.currentDeleteName ? this.state.currentDeleteName.toUpperCase() : null} will remove all of the person's data!
 					</Alert>	
 			    </Dialog>
 				
