@@ -61,7 +61,7 @@ class SignUp extends React.Component{
 	formSignUp(e){
 		e.preventDefault();
 
-		axios.post('http://localhost:5001/signup' , {
+		axios.post('/signup' , {
 
 			firstname: this.state.fName,
 			lastname: this.state.lName,

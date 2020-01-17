@@ -48,7 +48,6 @@ function updateGroupById(req, res){
    const id = req.params.id
    const userId = req.params.userid
 
-   console.log(req.body)
 
    db.query(`Update groups set group_name = '${group_name}' where id = ${id} and userid = ${userId}`)
     .then(item => res.status(200).json(item))

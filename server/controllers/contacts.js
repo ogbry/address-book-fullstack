@@ -13,7 +13,6 @@ function createContact(req, res) {
           state_or_province,
           postal_code,
           country } = req.body;
-          console.log(req.body)
   db.contacts
     .insert(
       {   
@@ -84,9 +83,6 @@ function deleteById(req, res) {
   const db = req.app.get('db');
   
   const id = req.params.id
-  // const userId = req.params.userid
-  
-  console.log(id)
   db.query(`Delete from contacts where id = ${id}`)
     .then(cont => res.status(200).json(cont))
     .catch(err => {

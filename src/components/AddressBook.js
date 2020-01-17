@@ -24,6 +24,7 @@ import TextField from '@material-ui/core/TextField';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import PeopleOutline from '@material-ui/icons/PeopleOutline';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import LinearProgress from '@material-ui/core/LinearProgress'
 
 
 const styles = {
@@ -85,6 +86,7 @@ class AddressBook extends React.Component<Props, State>{
 			editHelperError: false,
 			nameValue: '',
 			groupUpdateId: 0,
+			displayLog: 'none',
 		}
 	}
 
@@ -97,7 +99,7 @@ class AddressBook extends React.Component<Props, State>{
 		const uId = localStorage.getItem('id');
 		const groupId = this.state.queryGroupId
 
-	        axios.get(`http://localhost:5001/addressbook/${uId}?sort=${this.state.query}`)
+	        axios.get(`/addressbook/${uId}?sort=${this.state.query}`)
 	        
 	        .then(result => {
 	        	this.setState({
@@ -106,7 +108,7 @@ class AddressBook extends React.Component<Props, State>{
 	        	return result
 	   	 	})
 	   	 	.then(x=> {
-	   	 		axios.get(`http://localhost:5001/grouplist/${uId}`)
+	   	 		axios.get(`/grouplist/${uId}`)
 	        
 				        .then(result => {
 				        	this.setState({
@@ -157,7 +159,7 @@ class AddressBook extends React.Component<Props, State>{
 
 		const uId = localStorage.getItem('id')
 
-		axios.get(`http://localhost:5001/addressbook/${uId}?groups=${id}`)
+		axios.get(`/addressbook/${uId}?groups=${id}`)
 		.then(result => {
 	        	this.setState({
 	        		contacts: result.data
@@ -165,7 +167,7 @@ class AddressBook extends React.Component<Props, State>{
 	        	return result
 	   	 	})
 	   	 	.then(x=> {
-	   	 		axios.get(`http://localhost:5001/grouplist/${uId}`)
+	   	 		axios.get(`/grouplist/${uId}`)
 	        
 				        .then(result => {
 				        	this.setState({
@@ -196,7 +198,7 @@ class AddressBook extends React.Component<Props, State>{
 
 		else{
 
-			axios.patch(`http://localhost:5001/editgroup/${localStorage.getItem('id')}/${this.state.groupUpdateId}` , {
+			axios.patch(`/editgroup/${localStorage.getItem('id')}/${this.state.groupUpdateId}` , {
 
 				group_name: this.state.nameValue,
 
@@ -214,9 +216,13 @@ class AddressBook extends React.Component<Props, State>{
 	}
 
 	logout(e){
-
-		this.props.history.push('/signin')
-    	localStorage.clear()
+		this.setState({
+			displayLog: ''
+		})
+		setTimeout(() => {
+			localStorage.clear()
+			this.props.history.push('/signin')
+		}, 2000);
 	}
 
 	formCreateContact(e){
@@ -235,7 +241,7 @@ class AddressBook extends React.Component<Props, State>{
 		}
 
 		else{
-			axios.post('http://localhost:5001/createcontact' , {
+			axios.post('/createcontact' , {
 
 				id: id,
 				first_name: this.state.fName,
@@ -329,6 +335,16 @@ class AddressBook extends React.Component<Props, State>{
 
 	           </AppBar>
 
+			   <Grid container justify="center" direction="column" style={{display: `${this.state.displayLog}`}}>
+				<Grid item style={{width: '100%', textAlign: 'center', color: '#999'}}
+				>
+				<Typography variant="h5"><em>Logging out...</em></Typography>
+				</Grid>
+			   	<Grid item style={{width: '100%'}}>
+				   <LinearProgress style={{width: '100%'}} />
+				</Grid>
+			   </Grid>
+			   
 	           <AddressBookTable 
 	           	getData={this.getData} contacts={this.state.contacts} search={this.search} handleSearch={this.handleSearch} searchVal={this.state.searchVal} groups={this.state.groups} getGroupId={this.getGroupId} queryGroupId={this.state.queryGroupId} getEditId={this.getEditId}
 	           />
